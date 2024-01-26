@@ -191,5 +191,7 @@ def serve():
 
 
 if __name__ == "__main__":
+    print("Starting server")
+    initializers.load_envs()
     logging.basicConfig()
     serve()

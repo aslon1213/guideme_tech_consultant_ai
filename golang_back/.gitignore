@@ -1,2 +1,3 @@
 *.env*
 main
+dockerfiles/docker_commands.txt

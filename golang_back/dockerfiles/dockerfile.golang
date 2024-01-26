@@ -1,0 +1,16 @@
+FROM golang:alpine
+
+# WORKDIR /usr/src/app
+WORKDIR /app
+COPY /backend /app/backend
+COPY /docs /app/docs
+COPY main.go main_test.go .env go.mod go.sum .env.example /app/
+COPY /templates /app/templates
+COPY static /app/static
+COPY gcloud /app/gcloud
+
+# executer
+RUN cd /app
+RUN go mod tidy
+RUN go build -o main .
+CMD ["/app/main"]

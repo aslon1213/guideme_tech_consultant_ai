@@ -4,6 +4,11 @@ import orjson
 from format_with_chatgpt import format_actions_sequence
 from chromadb.utils import embedding_functions
 from chromadb.db.base import UniqueConstraintError
+import dotenv
+
+
+def load_envs():
+    dotenv.load_dotenv(verbose=True)
 
 
 class OpenedActionsFormatter:

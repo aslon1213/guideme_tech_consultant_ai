@@ -1,7 +1,5 @@
-.env
 lib/
 include/
 bin/
 pyvenv.cfg
 share/
-__pycache__/
