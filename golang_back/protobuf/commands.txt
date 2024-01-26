@@ -1,0 +1,7 @@
+
+#golang
+protoc *.proto --go_out=../ --go-grpc_out=../ --plugin=$(go env GOPATH)/bin/protoc-gen-go-grpc
+#python
+python3.11 -m grpc_tools.protoc --proto_path=. \
+  --python_out=../../grpc_python_files/ --grpc_python_out=../../grpc_python_files/ \
+  ./main.proto
