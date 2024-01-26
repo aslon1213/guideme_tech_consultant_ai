@@ -4,7 +4,7 @@ FROM python:3.11
 # install all dependencies
 RUN pip install --upgrade pip
 COPY requirements.txt ./
-RUN pip install --default-timeout=1000 --no-cache-dir langchain openai python-dotenv chromadb orjson grpcio-tools tensorflow bs4 nltk sentence_transformers langchain_openai langchainhub
+RUN pip install --default-timeout=1000 --no-cache-dir langchain openai python-dotenv chromadb orjson grpcio-tools tensorflow bs4 nltk sentence_transformers langchain_openai langchainhub unstructured
 RUN python -m nltk.downloader all
 # RUN pip3 install python-dotenv
 # RUN pip3 install instructorembedding
