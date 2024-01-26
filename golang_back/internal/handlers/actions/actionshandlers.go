@@ -106,7 +106,7 @@ func (a *ActionsWrappers) Train(c *fiber.Ctx) error {
 			"error": err.Error(),
 		})
 	}
-	fmt.Println("got input:", input)
+	// fmt.Println("got input:", input)
 	actions := []*toclassifier.ActionFull{}
 	for _, v := range input {
 		actionfull := toclassifier.ActionFull{
@@ -124,7 +124,7 @@ func (a *ActionsWrappers) Train(c *fiber.Ctx) error {
 		}
 		actions = append(actions, &actionfull)
 	}
-	fmt.Println("actions:", actions)
+	// fmt.Println("actions:", actions)
 	con, err := grpc.Dial(
 		os.Getenv("CLASSIFIER"),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
