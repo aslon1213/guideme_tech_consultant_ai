@@ -43,7 +43,7 @@ func New() *App {
 }
 
 func (app *App) Run() {
-	app.Fiber.Listen(":8000")
+	app.Fiber.Listen(":9000")
 }
 
 func (app *App) Close() {
