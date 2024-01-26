@@ -100,11 +100,18 @@ func (a *ActionsWrappers) Train(c *fiber.Ctx) error {
 		}
 		CanBeFormatted bool `json:"can_be_formatted"`
 	}
+	err := c.BodyParser(&input)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+	fmt.Println("got input:", input)
 	actions := []*toclassifier.ActionFull{}
 	for _, v := range input {
 		actionfull := toclassifier.ActionFull{
 			Name:           v.Name,
-			CanBeFormatted: false,
+			CanBeFormatted: v.CanBeFormatted,
 			Username:       username,
 		}
 		for _, action := range v.Actions {
@@ -117,7 +124,7 @@ func (a *ActionsWrappers) Train(c *fiber.Ctx) error {
 		}
 		actions = append(actions, &actionfull)
 	}
-
+	fmt.Println("actions:", actions)
 	con, err := grpc.Dial(
 		os.Getenv("CLASSIFIER"),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),

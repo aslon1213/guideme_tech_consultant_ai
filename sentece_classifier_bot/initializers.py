@@ -49,6 +49,7 @@ class TrainActionsBot:
         self.actions = actions
 
     def AddAction(self, action):
+        print("Got action", action)
         self.actions.append(action)
 
     def SetUsername(self, username):
@@ -73,13 +74,11 @@ class TrainActionsBot:
                 "demo_collection", embedding_function=sentence_transformer_ef
             )
             print("Deleted data from collection")
-            ids = [str(i) for i in range(len(self.actions))]
-            collection.add(documents=self.actions, ids=ids)
-            print("Added data to collection")
             # da = collection.query(query_texts=["hello"], n_results=1000)["documents"]
             # print(da)
+        print("Added data to collection")
+        print(self.actions)
+        ids = [str(i) for i in range(len(self.actions))]
 
-        collection.add(
-            documents=self.actions, ids=[str(i) for i in range(len(self.actions))]
-        )
+        collection.add(documents=[json.dumps(i) for i in self.actions], ids=ids)
         return "done"

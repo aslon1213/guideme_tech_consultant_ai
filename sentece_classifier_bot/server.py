@@ -85,13 +85,15 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
             if counter == 0:
                 username = request.username
             action_full = MessageToDict(request)
+            print(action_full)
             training_.AddAction(
                 {
                     "actions": action_full["actions"],
                     "name": action_full["name"],
-                    "can_be_formatted": action_full["can_be_formatted"],
+                    "can_be_formatted": action_full.get("can_be_formatted", False),
                 }
             )
+
             counter += 1
         training_.SetUsername(username)
         training_.TrainandSave()

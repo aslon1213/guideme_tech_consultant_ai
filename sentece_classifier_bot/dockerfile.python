@@ -4,10 +4,10 @@ FROM python:3.11
 # install all dependencies
 RUN pip install --upgrade pip
 COPY requirements.txt ./
-RUN pip install --no-cache-dir langchain openai python-dotenv chromadb orjson grpcio-tools tensorflow bs4 nltk sentence_transformers langchain_openai
-# executer
+RUN pip install --default-timeout=1000 --no-cache-dir langchain openai python-dotenv chromadb orjson grpcio-tools tensorflow bs4 nltk sentence_transformers langchain_openai langchainhub
+RUN python -m nltk.downloader all
 # RUN pip3 install python-dotenv
 # RUN pip3 install instructorembedding
 COPY . .
 RUN chmod +x entrypoint.sh
-ENTRYPOINT [ "python server.py" ]
+ENTRYPOINT [ "python","./server.py" ]
