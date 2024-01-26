@@ -3,6 +3,7 @@ package documents
 import (
 	"aslon1213/customer_support_bot/internal/grpc/toclassifier"
 	"context"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -36,7 +37,7 @@ func (dh *DocumentHandlers) Upload(c *fiber.Ctx) error {
 	// check if user exists
 
 	conn, err := grpc.Dial(
-		"localhost:50051",
+		os.Getenv("CLASSIFIER"),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
@@ -77,7 +78,7 @@ func (dh *DocumentHandlers) Upload(c *fiber.Ctx) error {
 func (dh *DocumentHandlers) Train(c *fiber.Ctx) error {
 
 	conn, err := grpc.Dial(
-		"localhost:50051",
+		os.Getenv("CLASSIFIER"),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {

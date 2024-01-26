@@ -4,6 +4,7 @@ import (
 	"aslon1213/customer_support_bot/internal/grpc/toclassifier"
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -31,7 +32,7 @@ func (a *ActionsWrappers) Can(c *fiber.Ctx) error {
 	// n_results = 1
 
 	conn, err := grpc.Dial(
-		"localhost:50051",
+		os.Getenv("CLASSIFIER"),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
@@ -68,7 +69,7 @@ func (a *ActionsWrappers) QueryActions(c *fiber.Ctx) error {
 		Username: username,
 	}
 	con, err := grpc.Dial(
-		"localhost:50051",
+		os.Getenv("CLASSIFIER"),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
@@ -118,7 +119,7 @@ func (a *ActionsWrappers) Train(c *fiber.Ctx) error {
 	}
 
 	con, err := grpc.Dial(
-		"localhost:50051",
+		os.Getenv("CLASSIFIER"),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {

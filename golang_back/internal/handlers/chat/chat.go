@@ -4,6 +4,7 @@ import (
 	"aslon1213/customer_support_bot/internal/grpc/toclassifier"
 	"context"
 	"encoding/json"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -29,7 +30,7 @@ func (ch *ChatHandlers) OpenChat(c *fiber.Ctx) error {
 	// check if user exists
 
 	con, err := grpc.Dial(
-		"localhost:50051",
+		os.Getenv("CLASSIFIER"),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
@@ -60,7 +61,7 @@ func (ch *ChatHandlers) Query(c *fiber.Ctx) error {
 	q := c.Query("q")
 
 	con, err := grpc.Dial(
-		"localhost:50051",
+		os.Getenv("CLASSIFIER"),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
@@ -97,7 +98,7 @@ func (ch *ChatHandlers) CloseChat(c *fiber.Ctx) error {
 	chat_id := c.Query("chat_id")
 
 	con, err := grpc.Dial(
-		"localhost:50051",
+		os.Getenv("CLASSIFIER"),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
