@@ -88,9 +88,8 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
             print(action_full)
             training_.AddAction(
                 {
-                    "actions": action_full["actions"],
+                    "properties": action_full["properties"],
                     "name": action_full["name"],
-                    "can_be_formatted": action_full.get("can_be_formatted", False),
                 }
             )
 
@@ -148,9 +147,14 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
             results = actions_formatter.collection.query(
                 query_texts=[request.query], n_results=1
             )
-            formatted_results = actions_formatter.FormatToGeneralAnswer(results)
+            formatted_results = actions_formatter.FormatToGeneralAnswer(
+                results, request.query
+            )
             # parse results to ActionFull
-            response_2 = GeneralAnswer(answer=orjson.dumps(formatted_results))
+            print("Got results", formatted_results)
+            response_2 = GeneralAnswer(
+                answer=orjson.dumps({"message": formatted_results, "type": "actions"})
+            )
         else:
             #  go to chatbot
             print("I am going to chatbot")
@@ -167,17 +171,16 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
 
     def QueryActions(self, request, context):
         print(request)
-        chroma = chromadb.PersistentClient("./data/" + request.username)
+        chroma = chromadb.PersistentClient("./data_actions/" + request.username)
         collection = chroma.get_collection("demo_collection")
 
         # results = collection.query(query_texts=["hello"], n_results=1)["documents"]
         results = collection.query(query_texts=[request.query], n_results=1)
         # parse results to ActionFull
         o = orjson.loads(results["documents"][0][0])
-
+        print(o)
         return ActionFull(
-            actions=o["actions"],
-            can_be_formatted=o.get("can_be_formatted", False),
+            properties=o["properties"],
             username=request.username,
             name=o["name"],
         )

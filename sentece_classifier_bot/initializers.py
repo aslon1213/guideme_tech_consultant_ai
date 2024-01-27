@@ -31,13 +31,12 @@ class OpenedActionsFormatter:
         results = orjson.dumps(results)
         return results
 
-    def FormatToGeneralAnswer(self, results):
+    def FormatToGeneralAnswer(self, results, user_message):
         o = orjson.loads(results["documents"][0][0])
-        if o.get("can_be_formatted", False):
-            message, response = format_actions_sequence(o, o["user_message"])
-            o["actions"] = orjson.loads(message.content[14:])
-        o["type"] = "actions"
-        return o
+        message, response = format_actions_sequence(o, user_message=user_message)
+        if "action" in message.content[:10]:
+            return orjson.loads(message.content[8:])
+        return orjson.loads(message.content)
 
 
 class TrainActionsBot:
@@ -77,6 +76,9 @@ class TrainActionsBot:
             # da = collection.query(query_texts=["hello"], n_results=1000)["documents"]
             # print(da)
         print("Added data to collection")
+        for i in range(len(self.actions)):
+            properties_dict = {x: "" for x in self.actions[i]["properties"]}
+            self.actions[i]["properties"] = properties_dict
         print(self.actions)
         ids = [str(i) for i in range(len(self.actions))]
 

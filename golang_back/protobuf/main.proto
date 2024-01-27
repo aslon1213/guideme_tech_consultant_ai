@@ -2,7 +2,7 @@ syntax = "proto3";
 
 
 package toclassifier;
-option go_package = "internal/grpc/toclassifier";
+option go_package = "pkg/grpc/toclassifier";
 
 
 service ToClassifier {
@@ -70,8 +70,7 @@ message Query {
 message ActionFull {
     string name = 1;
     // list of actions Action 
-    repeated Action actions = 2;
-    bool can_be_formatted = 3;
+    repeated string properties = 2;
     string username = 4;
 }
 message Action {

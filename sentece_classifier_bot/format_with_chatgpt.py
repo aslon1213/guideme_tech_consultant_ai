@@ -9,7 +9,7 @@ def format_actions_sequence(actions: dict, user_message: str = None):
     messages = [
         {
             "role": "system",
-            "content": "You are bot and you have only one job: extract data from the user message and format it in actions list where the value is present. Strictly do not change other structures of the actions list - if you cannot do what is asked just return the original actions list as it is.",
+            "content": "You are bot and you have only one job: extract data from the user message and fill the empty values in the properties with the corresponding values you got from the user message. If properties cannot be filled - do not change anything -simply output. do not add any prefix to the output.",
         },
         {
             "role": "user",
@@ -19,12 +19,12 @@ def format_actions_sequence(actions: dict, user_message: str = None):
     if user_message == None:
         raise Exception("User message is required")
     actions_string = ""
-    actions_string = json.dumps(actions["actions"])
-    messages.append({"role": "system", "content": "actions list: " + actions_string})
+    actions_string = json.dumps(actions)
+    messages.append({"role": "system", "content": "action: " + actions_string})
 
     response = openai.chat.completions.create(model="gpt-4", messages=messages)
     message = response.choices[0].message
-
+    print("GET MESSAGE: ", message)
     return message, response
 
 

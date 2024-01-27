@@ -92,13 +92,9 @@ func (a *ActionsWrappers) QueryActions(c *fiber.Ctx) error {
 func (a *ActionsWrappers) Train(c *fiber.Ctx) error {
 	username := c.Query("username")
 	var input []struct {
-		Name    string `json:"name"`
-		Actions []struct {
-			Type    string `json:"type"`
-			Element string `json:"element"`
-			Value   string `json:"value"`
-		}
-		CanBeFormatted bool `json:"can_be_formatted"`
+		Name           string   `json:"name"`
+		Properties     []string `json:"properties"`
+		CanBeFormatted bool     `json:"can_be_formatted"`
 	}
 	err := c.BodyParser(&input)
 	if err != nil {
@@ -111,17 +107,9 @@ func (a *ActionsWrappers) Train(c *fiber.Ctx) error {
 	actions := []*toclassifier.ActionFull{}
 	for _, v := range input {
 		actionfull := toclassifier.ActionFull{
-			Name:           v.Name,
-			CanBeFormatted: v.CanBeFormatted,
-			Username:       username,
-		}
-		for _, action := range v.Actions {
-			action := toclassifier.Action{
-				Type:    action.Type,
-				Element: action.Element,
-				Value:   action.Value,
-			}
-			actionfull.Actions = append(actionfull.Actions, &action)
+			Name:       v.Name,
+			Properties: v.Properties,
+			Username:   username,
 		}
 		actions = append(actions, &actionfull)
 	}
