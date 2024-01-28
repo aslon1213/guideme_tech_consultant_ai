@@ -72,7 +72,6 @@ class Chatbot:
         self.vectorstore = vectorstore
 
     def FormatForGeneralAnswer(self, result):
-        print(result)
         return orjson.dumps({"type": "answer", "message": result})
 
     def LoadVectorStore(self):

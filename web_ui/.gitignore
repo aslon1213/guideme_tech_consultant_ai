@@ -1,0 +1,10 @@
+.env
+lib/
+include/
+bin/
+pyvenv.cfg
+share/
+__pycache__/
+test.json
+test.txt
+test.ipynb

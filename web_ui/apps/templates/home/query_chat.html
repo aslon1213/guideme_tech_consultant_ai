@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+
+    <!-- input chat_id -->
+    <p>CHAT ID ------ {{chat_id}}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="chat_id" placeholder="chat_id" hidden="true">
+        <input type="text" name="q" placeholder="q">
+        <button type="submit">Submit</button>
+    </form>
+
+</body>
+
+</html>

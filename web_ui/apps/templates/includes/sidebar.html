@@ -1,0 +1,37 @@
+<div class="sidebar" data-color="purple" data-background-color="white" data-image="/static/assets/img/sidebar-1.jpg">
+  <div class="logo">
+    <a target="_blank" rel="noopener noreferrer" href="https://appseed.us/admin-dashboards/django-dashboard-material"
+      class="simple-text logo-normal">
+      Django Material
+    </a>
+  </div>
+  <div class="sidebar-wrapper">
+    <ul class="nav">
+
+      <li class="nav-item {% if 'ui-tables' in segment %} active {% endif %}">
+        <a class="nav-link" href="{% url 'actions_train'%}">
+          <i class="material-icons">content_paste</i>
+          <p>Actions</p>
+        </a>
+      </li>
+      <li class="nav-item {% if 'ui-typography' in segment %} active {% endif %}">
+        <a class="nav-link" href="{%url 'upload_document'%}">
+          <i class="material-icons">library_books</i>
+          <p>Documents</p>
+        </a>
+      </li>
+      <li class="nav-item {% if 'ui-typography' in segment %} active {% endif %}">
+        <a class="nav-link" href="{%url 'tune'%}">
+          <i class="material-icons">library_books</i>
+          <p>Tune</p>
+        </a>
+      </li>
+
+
+
+
+
+    </ul>
+  </div>
+
+</div>

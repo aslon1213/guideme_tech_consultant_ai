@@ -165,7 +165,7 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
                     answer=orjson.dumps({"message": "Chat With this chat_id not found"})
                 )
             results = handle_chat_query(chatbot, q)
-            print("Got results", results)
+            # print("Got results", results)
             response_2 = GeneralAnswer(answer=results)
         return response_2
 
