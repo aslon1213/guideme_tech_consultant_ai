@@ -150,10 +150,10 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
             p = main(model, q)
         types = {"0": " ", "question": 1, "statement": 2, "command": 3}
         for t in types.keys():
-            if t == p[0]:
+            if types[t] == p[0]:
                 print(
                     "Expected sentence classification ",
-                    types[t],
+                    t,
                     " ---- with type number",
                     p,
                 )
