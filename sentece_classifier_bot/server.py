@@ -14,7 +14,7 @@ from load_model import load_model
 from main import main
 from uuid import uuid4
 import initializers
-from chatbot import Chatbot, TrainonDocuments
+from chatbot import Chatbot, TrainonDocuments, AnotherException
 from langchain_community.embeddings import HuggingFaceEmbeddings
 
 sentence_transformer_ef_chroma = (
@@ -187,7 +187,7 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
                 )
             try:
                 results = handle_chat_query(chatbot, q)
-            except:
+            except AnotherException:
                 print(
                     "seems like question is actually is actions request - doing additional actions thing"
                 )

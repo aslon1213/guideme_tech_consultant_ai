@@ -21,6 +21,10 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 import chromadb
 
 
+class AnotherException(Exception):
+    pass
+
+
 class Chatbot:
     def __init__(self):
         self.chatbot = None
@@ -72,8 +76,9 @@ class Chatbot:
         self.vectorstore = vectorstore
 
     def FormatForGeneralAnswer(self, result):
+        print("Message from openai: ", result)
         if "I'm sorry" in result:
-            raise Exception()
+            raise AnotherException()
         return orjson.dumps({"type": "answer", "message": result})
 
     def LoadVectorStore(self):
