@@ -152,9 +152,8 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
             )
             # parse results to ActionFull
             print("Got results", formatted_results)
-            response_2 = GeneralAnswer(
-                answer=orjson.dumps({"message": formatted_results, "type": "actions"})
-            )
+            formatted_results["type"] = "actions"
+            response_2 = GeneralAnswer(answer=orjson.dumps(formatted_results))
         else:
             #  go to chatbot
             print("I am going to chatbot")
@@ -179,11 +178,8 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
                 )
                 # parse results to ActionFull
                 print("Got results", formatted_results)
-                return GeneralAnswer(
-                    answer=orjson.dumps(
-                        {"message": formatted_results, "type": "actions"}
-                    )
-                )
+                formatted_results["type"] = "actions"
+                return GeneralAnswer(answer=orjson.dumps(formatted_results))
             # print("Got results", results)
             response_2 = GeneralAnswer(answer=results)
         return response_2
