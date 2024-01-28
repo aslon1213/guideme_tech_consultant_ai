@@ -72,6 +72,8 @@ class Chatbot:
         self.vectorstore = vectorstore
 
     def FormatForGeneralAnswer(self, result):
+        if "I'm sorry" in result:
+            raise Exception()
         return orjson.dumps({"type": "answer", "message": result})
 
     def LoadVectorStore(self):

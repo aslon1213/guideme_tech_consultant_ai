@@ -164,7 +164,26 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
                 return GeneralAnswer(
                     answer=orjson.dumps({"message": "Chat With this chat_id not found"})
                 )
-            results = handle_chat_query(chatbot, q)
+            try:
+                results = handle_chat_query(chatbot, q)
+            except:
+                print(
+                    "seems like question is actually is actions request - doing additional actions thing"
+                )
+                actions_formatter = opened_chats[request.chat_id][0]
+                results_2 = actions_formatter.collection.query(
+                    query_texts=[request.query], n_results=1
+                )
+                formatted_results = actions_formatter.FormatToGeneralAnswer(
+                    results_2, request.query
+                )
+                # parse results to ActionFull
+                print("Got results", formatted_results)
+                return GeneralAnswer(
+                    answer=orjson.dumps(
+                        {"message": formatted_results, "type": "actions"}
+                    )
+                )
             # print("Got results", results)
             response_2 = GeneralAnswer(answer=results)
         return response_2
