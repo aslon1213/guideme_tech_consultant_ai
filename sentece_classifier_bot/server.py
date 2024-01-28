@@ -88,7 +88,7 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
             print(action_full)
             training_.AddAction(
                 {
-                    "properties": action_full["properties"],
+                    "properties": action_full.get("properties", []),
                     "name": action_full["name"],
                 }
             )

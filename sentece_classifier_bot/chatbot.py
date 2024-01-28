@@ -105,7 +105,7 @@ class TrainonDocuments:
             chunk_size=1000, chunk_overlap=200
         )
         splits = text_splitter.split_documents(documents=self.documents)
-
+        print("Splits ----- ", splits)
         chromaaa = chromadb.PersistentClient("./data_chatbot/" + self.username)
         sentence_transformer_ef = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         chroma_instance = Chroma(
@@ -116,8 +116,13 @@ class TrainonDocuments:
         print("adding documents")
         chroma_instance.add_documents(splits)
         qa_list_str = [json.dumps(i) for i in qa_list]
+        print("QA LIST __------ ", qa_list)
         collection = chromaaa.get_collection("demo_collection")
-        collection.add(documents=qa_list_str, ids=[str(i) for i in range(len(qa_list))])
+        # get collection's ids
+        n = collection.count()
+        collection.add(
+            documents=qa_list_str, ids=[str(i + n) for i in range(len(qa_list))]
+        )
         return chroma_instance
 
     def Train(self):
