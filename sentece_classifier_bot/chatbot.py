@@ -101,14 +101,13 @@ class TrainonDocuments:
     def SetUsername(self, username):
         self.username = username
 
-    def TrainDocumentsAlsoJson(self, qa_list):
+    def TrainDocumentsAlsoJson(self, qa_list, sentence_transformer_ef):
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=1000, chunk_overlap=200
         )
         splits = text_splitter.split_documents(documents=self.documents)
         print("Splits ----- ", splits)
         chromaaa = chromadb.PersistentClient("./data_chatbot/" + self.username)
-        sentence_transformer_ef = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         chroma_instance = Chroma(
             collection_name="demo_collection",
             client=chromaaa,
@@ -126,14 +125,13 @@ class TrainonDocuments:
         )
         return chroma_instance
 
-    def Train(self):
+    def Train(self, sentence_transformer_ef):
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=1000, chunk_overlap=200
         )
         splits = text_splitter.split_documents(documents=self.documents)
 
         chromaaa = chromadb.PersistentClient("./data_chatbot/" + self.username)
-        sentence_transformer_ef = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         chroma_instance = Chroma(
             collection_name="demo_collection",
             client=chromaaa,

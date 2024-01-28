@@ -54,13 +54,9 @@ class TrainActionsBot:
     def SetUsername(self, username):
         self.username = username
 
-    def TrainandSave(self):
+    def TrainandSave(self, sentence_transformer_ef):
         chroma_client = chromadb.PersistentClient("./data_actions/" + self.username)
-        sentence_transformer_ef = (
-            embedding_functions.SentenceTransformerEmbeddingFunction(
-                model_name="all-MiniLM-L6-v2"
-            )
-        )
+
         try:
             collection = chroma_client.create_collection(
                 "demo_collection", embedding_function=sentence_transformer_ef

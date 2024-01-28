@@ -15,12 +15,22 @@ from main import main
 from uuid import uuid4
 import initializers
 from chatbot import Chatbot, TrainonDocuments
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
+sentence_transformer_ef_chroma = (
+    embedding_functions.SentenceTransformerEmbeddingFunction(
+        model_name="all-MiniLM-L6-v2"
+    )
+)
 # chat_id = [actions, chatbot]
 opened_chats = {}
 
 model = load_model()
 print("Model loaded!")
+
+sentence_transformer_ef_huggingface = HuggingFaceEmbeddings(
+    model_name="all-MiniLM-L6-v2"
+)
 
 
 def handle_chat_query(chatbot: Chatbot, query):
@@ -48,7 +58,10 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
         training_ = TrainonDocuments()
         training_.SetUsername(username)
         training_.LoadDocuments()
-        chroma_instance = training_.TrainDocumentsAlsoJson(questions_answer)
+        chroma_instance = training_.TrainDocumentsAlsoJson(
+            questions_answer,
+            sentence_transformer_ef=sentence_transformer_ef_huggingface,
+        )
         # chroma_instance.add_documents(questions_answer)
         print("Training done")
         return TrainResponse(message="Training is being done")
@@ -58,7 +71,7 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
         training_ = TrainonDocuments()
         training_.SetUsername(username)
         training_.LoadDocuments()
-        training_.Train()
+        training_.Train(sentence_transformer_ef=sentence_transformer_ef_huggingface)
         print("Training done")
         return TrainResponse(message="Training is being done")
 
@@ -95,7 +108,7 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
 
             counter += 1
         training_.SetUsername(username)
-        training_.TrainandSave()
+        training_.TrainandSave(sentence_transformer_ef=sentence_transformer_ef_chroma)
         return TrainResponse(message="Training done")
 
     def OpenChat(self, request, context):
@@ -132,9 +145,18 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
     def ClassifyAndAnswer(self, request, context):
         print(request)
         q = request.query
-        p = main(model, q)
-        # types = {"0": " ", "question": 1, "statement": 2, "command": 3}
-        print(p)
+        p = [3]
+        if "I want to" not in request.query:
+            p = main(model, q)
+        types = {"0": " ", "question": 1, "statement": 2, "command": 3}
+        for t in types.keys():
+            if t == p[0]:
+                print(
+                    "Expected sentence classification ",
+                    types[t],
+                    " ---- with type number",
+                    p,
+                )
         if p[0] == 3:
             # go to query actions
             print("I am goint with actions")
