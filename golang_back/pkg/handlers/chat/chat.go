@@ -4,6 +4,7 @@ import (
 	"aslon1213/customer_support_bot/pkg/grpc/toclassifier"
 	"context"
 	"encoding/json"
+	"fmt"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
@@ -59,7 +60,7 @@ func (ch *ChatHandlers) Query(c *fiber.Ctx) error {
 
 	chat_id := c.Query("chat_id")
 	q := c.Query("q")
-
+	fmt.Println("Got Query", q)
 	con, err := grpc.Dial(
 		os.Getenv("CLASSIFIER"),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
@@ -89,6 +90,7 @@ func (ch *ChatHandlers) Query(c *fiber.Ctx) error {
 			"error": err.Error(),
 		})
 	}
+	fmt.Println("Got results: ", o)
 
 	return c.JSON(o)
 }
