@@ -11,13 +11,23 @@ rpc TrainActions (stream ActionFull) returns (TrainResponse) {}
 rpc TrainonSavedDocumentsJson (JsonData) returns (TrainResponse) {}
 rpc QueryActions (Query) returns (ActionFull) {}
 
+rpc GiveAudioAnswerForQuery (Query) returns (GeneralAnswer) {}
+rpc GiveAudioAnswerOrJustTextAnswer(Query) returns (AudoWithText) {}
+
 rpc SaveDocuments(Documents) returns (GeneralAnswer) {}
+rpc GetGreetingMessage(Username) returns (GeneralAnswer) {}
 
 // to classifier service
 rpc ClassifyAndAnswer (Query) returns (GeneralAnswer) {}
 rpc OpenChat (Query) returns (ChatID) {}
 rpc CloseChat (ChatID) returns (GeneralAnswer) {}
 
+}
+
+
+message AudoWithText {
+    bytes audio = 1;
+    string text = 2;
 }
 
 message JsonData {

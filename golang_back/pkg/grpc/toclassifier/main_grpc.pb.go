@@ -19,14 +19,17 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	ToClassifier_TrainOnSavedDocuments_FullMethodName     = "/toclassifier.ToClassifier/TrainOnSavedDocuments"
-	ToClassifier_TrainActions_FullMethodName              = "/toclassifier.ToClassifier/TrainActions"
-	ToClassifier_TrainonSavedDocumentsJson_FullMethodName = "/toclassifier.ToClassifier/TrainonSavedDocumentsJson"
-	ToClassifier_QueryActions_FullMethodName              = "/toclassifier.ToClassifier/QueryActions"
-	ToClassifier_SaveDocuments_FullMethodName             = "/toclassifier.ToClassifier/SaveDocuments"
-	ToClassifier_ClassifyAndAnswer_FullMethodName         = "/toclassifier.ToClassifier/ClassifyAndAnswer"
-	ToClassifier_OpenChat_FullMethodName                  = "/toclassifier.ToClassifier/OpenChat"
-	ToClassifier_CloseChat_FullMethodName                 = "/toclassifier.ToClassifier/CloseChat"
+	ToClassifier_TrainOnSavedDocuments_FullMethodName           = "/toclassifier.ToClassifier/TrainOnSavedDocuments"
+	ToClassifier_TrainActions_FullMethodName                    = "/toclassifier.ToClassifier/TrainActions"
+	ToClassifier_TrainonSavedDocumentsJson_FullMethodName       = "/toclassifier.ToClassifier/TrainonSavedDocumentsJson"
+	ToClassifier_QueryActions_FullMethodName                    = "/toclassifier.ToClassifier/QueryActions"
+	ToClassifier_GiveAudioAnswerForQuery_FullMethodName         = "/toclassifier.ToClassifier/GiveAudioAnswerForQuery"
+	ToClassifier_GiveAudioAnswerOrJustTextAnswer_FullMethodName = "/toclassifier.ToClassifier/GiveAudioAnswerOrJustTextAnswer"
+	ToClassifier_SaveDocuments_FullMethodName                   = "/toclassifier.ToClassifier/SaveDocuments"
+	ToClassifier_GetGreetingMessage_FullMethodName              = "/toclassifier.ToClassifier/GetGreetingMessage"
+	ToClassifier_ClassifyAndAnswer_FullMethodName               = "/toclassifier.ToClassifier/ClassifyAndAnswer"
+	ToClassifier_OpenChat_FullMethodName                        = "/toclassifier.ToClassifier/OpenChat"
+	ToClassifier_CloseChat_FullMethodName                       = "/toclassifier.ToClassifier/CloseChat"
 )
 
 // ToClassifierClient is the client API for ToClassifier service.
@@ -37,7 +40,10 @@ type ToClassifierClient interface {
 	TrainActions(ctx context.Context, opts ...grpc.CallOption) (ToClassifier_TrainActionsClient, error)
 	TrainonSavedDocumentsJson(ctx context.Context, in *JsonData, opts ...grpc.CallOption) (*TrainResponse, error)
 	QueryActions(ctx context.Context, in *Query, opts ...grpc.CallOption) (*ActionFull, error)
+	GiveAudioAnswerForQuery(ctx context.Context, in *Query, opts ...grpc.CallOption) (*GeneralAnswer, error)
+	GiveAudioAnswerOrJustTextAnswer(ctx context.Context, in *Query, opts ...grpc.CallOption) (*AudoWithText, error)
 	SaveDocuments(ctx context.Context, in *Documents, opts ...grpc.CallOption) (*GeneralAnswer, error)
+	GetGreetingMessage(ctx context.Context, in *Username, opts ...grpc.CallOption) (*GeneralAnswer, error)
 	// to classifier service
 	ClassifyAndAnswer(ctx context.Context, in *Query, opts ...grpc.CallOption) (*GeneralAnswer, error)
 	OpenChat(ctx context.Context, in *Query, opts ...grpc.CallOption) (*ChatID, error)
@@ -113,9 +119,36 @@ func (c *toClassifierClient) QueryActions(ctx context.Context, in *Query, opts .
 	return out, nil
 }
 
+func (c *toClassifierClient) GiveAudioAnswerForQuery(ctx context.Context, in *Query, opts ...grpc.CallOption) (*GeneralAnswer, error) {
+	out := new(GeneralAnswer)
+	err := c.cc.Invoke(ctx, ToClassifier_GiveAudioAnswerForQuery_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *toClassifierClient) GiveAudioAnswerOrJustTextAnswer(ctx context.Context, in *Query, opts ...grpc.CallOption) (*AudoWithText, error) {
+	out := new(AudoWithText)
+	err := c.cc.Invoke(ctx, ToClassifier_GiveAudioAnswerOrJustTextAnswer_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *toClassifierClient) SaveDocuments(ctx context.Context, in *Documents, opts ...grpc.CallOption) (*GeneralAnswer, error) {
 	out := new(GeneralAnswer)
 	err := c.cc.Invoke(ctx, ToClassifier_SaveDocuments_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *toClassifierClient) GetGreetingMessage(ctx context.Context, in *Username, opts ...grpc.CallOption) (*GeneralAnswer, error) {
+	out := new(GeneralAnswer)
+	err := c.cc.Invoke(ctx, ToClassifier_GetGreetingMessage_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -157,7 +190,10 @@ type ToClassifierServer interface {
 	TrainActions(ToClassifier_TrainActionsServer) error
 	TrainonSavedDocumentsJson(context.Context, *JsonData) (*TrainResponse, error)
 	QueryActions(context.Context, *Query) (*ActionFull, error)
+	GiveAudioAnswerForQuery(context.Context, *Query) (*GeneralAnswer, error)
+	GiveAudioAnswerOrJustTextAnswer(context.Context, *Query) (*AudoWithText, error)
 	SaveDocuments(context.Context, *Documents) (*GeneralAnswer, error)
+	GetGreetingMessage(context.Context, *Username) (*GeneralAnswer, error)
 	// to classifier service
 	ClassifyAndAnswer(context.Context, *Query) (*GeneralAnswer, error)
 	OpenChat(context.Context, *Query) (*ChatID, error)
@@ -181,8 +217,17 @@ func (UnimplementedToClassifierServer) TrainonSavedDocumentsJson(context.Context
 func (UnimplementedToClassifierServer) QueryActions(context.Context, *Query) (*ActionFull, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryActions not implemented")
 }
+func (UnimplementedToClassifierServer) GiveAudioAnswerForQuery(context.Context, *Query) (*GeneralAnswer, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GiveAudioAnswerForQuery not implemented")
+}
+func (UnimplementedToClassifierServer) GiveAudioAnswerOrJustTextAnswer(context.Context, *Query) (*AudoWithText, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GiveAudioAnswerOrJustTextAnswer not implemented")
+}
 func (UnimplementedToClassifierServer) SaveDocuments(context.Context, *Documents) (*GeneralAnswer, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SaveDocuments not implemented")
+}
+func (UnimplementedToClassifierServer) GetGreetingMessage(context.Context, *Username) (*GeneralAnswer, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGreetingMessage not implemented")
 }
 func (UnimplementedToClassifierServer) ClassifyAndAnswer(context.Context, *Query) (*GeneralAnswer, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ClassifyAndAnswer not implemented")
@@ -286,6 +331,42 @@ func _ToClassifier_QueryActions_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ToClassifier_GiveAudioAnswerForQuery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Query)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToClassifierServer).GiveAudioAnswerForQuery(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ToClassifier_GiveAudioAnswerForQuery_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToClassifierServer).GiveAudioAnswerForQuery(ctx, req.(*Query))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ToClassifier_GiveAudioAnswerOrJustTextAnswer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Query)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToClassifierServer).GiveAudioAnswerOrJustTextAnswer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ToClassifier_GiveAudioAnswerOrJustTextAnswer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToClassifierServer).GiveAudioAnswerOrJustTextAnswer(ctx, req.(*Query))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ToClassifier_SaveDocuments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Documents)
 	if err := dec(in); err != nil {
@@ -300,6 +381,24 @@ func _ToClassifier_SaveDocuments_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ToClassifierServer).SaveDocuments(ctx, req.(*Documents))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ToClassifier_GetGreetingMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Username)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToClassifierServer).GetGreetingMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ToClassifier_GetGreetingMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToClassifierServer).GetGreetingMessage(ctx, req.(*Username))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -378,8 +477,20 @@ var ToClassifier_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ToClassifier_QueryActions_Handler,
 		},
 		{
+			MethodName: "GiveAudioAnswerForQuery",
+			Handler:    _ToClassifier_GiveAudioAnswerForQuery_Handler,
+		},
+		{
+			MethodName: "GiveAudioAnswerOrJustTextAnswer",
+			Handler:    _ToClassifier_GiveAudioAnswerOrJustTextAnswer_Handler,
+		},
+		{
 			MethodName: "SaveDocuments",
 			Handler:    _ToClassifier_SaveDocuments_Handler,
+		},
+		{
+			MethodName: "GetGreetingMessage",
+			Handler:    _ToClassifier_GetGreetingMessage_Handler,
 		},
 		{
 			MethodName: "ClassifyAndAnswer",

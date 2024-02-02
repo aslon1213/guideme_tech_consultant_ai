@@ -1,4 +1,11 @@
-from main_pb2 import TrainResponse, ActionFull, GeneralAnswer, ChatID, TrainResponse
+from main_pb2 import (
+    TrainResponse,
+    ActionFull,
+    GeneralAnswer,
+    ChatID,
+    TrainResponse,
+    AudoWithText,
+)
 import main_pb2_grpc
 import grpc
 from concurrent import futures
@@ -32,10 +39,34 @@ sentence_transformer_ef_huggingface = HuggingFaceEmbeddings(
     model_name="all-MiniLM-L6-v2"
 )
 
+############################################################################################################
+############################################################################################################
+# user for a testing purposes - it will be deleted ofc immidiately before production
+user_data = {
+    "id": {"$oid": "65bb9447fc13ae5136234b42"},
+    "first_name": "Ennis",
+    "last_name": "Josephoff",
+    "email": "ejosephoff0@bloglines.com",
+    "gender": "Male",
+    "passport_number": "2966981717",
+    "money": 1000000,
+    "credit_left": 120000,
+    "credit_history": [
+        {"date": "11.11.2023", "amount": 100000},
+        {"date": "11.12.2024", "amount": 100000},
+        {"date": "11.01.2024", "amount": 100000},
+    ],
+}
+############################################################################################################
+############################################################################################################
 
-def handle_chat_query(chatbot: Chatbot, query):
+
+def handle_chat_query(chatbot: Chatbot, query, needs_formatting=True):
     results = chatbot.Query(query)
-    return chatbot.FormatForGeneralAnswer(results)
+    if needs_formatting:
+        return chatbot.FormatForGeneralAnswer(results)
+    else:
+        return results
 
 
 class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
@@ -44,8 +75,25 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
     def __init__(self):
         self.text = "Hello"
 
+    def GiveAudioAnswerOrJustTextAnswer(self, request, context):
+        # do something to get the asnwer for the query, question, sentence etc
+        query = request.query
+        # username = request.username
+        chat_id = request.chat_id
+        chatbot = opened_chats[chat_id][1]
+
+        print("Doing query with audio or text, chat_id = ", chat_id)
+        results = handle_chat_query(chatbot, query, needs_formatting=False)
+        # convert
+        return AudoWithText(text=results)
+
+    def GetGreetingMessage(self, request, context):
+        username = request.username
+        with open("./audios/salom.mp3", "rb") as f:
+            audio = f.read()
+            return GeneralAnswer(answer=audio)
+
     def SaveDocuments(self, request, context):
-        username = ""
         username = request.username
         with open("./data_chatbot/" + username + "/" + request.filename, "w") as f:
             f.write(str(request.file_content))
@@ -124,7 +172,7 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
         # collection = actions_formatter.collection
         # get chatbot
         chatbot = Chatbot()
-        chatbot.LoadVectorstoreandChatbot(username)
+        chatbot.LoadVectorstoreandChatbot(username, user_data=user_data)
         opened_chats[chat_id] = [actions_formatter, chatbot]
         return ChatID(chat_id=chat_id)
 

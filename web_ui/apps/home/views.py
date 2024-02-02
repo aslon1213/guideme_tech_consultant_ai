@@ -22,20 +22,20 @@ def home_page(request):
 def open_chat(request):
     username = request.GET.get("username")
     print(username)
-    return HttpResponseRedirect(f"http://35.215.137.189/chat/open?username={username}")
+    return HttpResponseRedirect(f"http://127.0.0.1:9000/chat/open?username={username}")
 
 
 def query_chat(request):
     q = request.GET.get("q")
     chat_id = request.GET.get("chat_id")
     return HttpResponseRedirect(
-        f"http://35.215.137.189/chat/query?", params={"q": q, "chat_id": chat_id}
+        f"http://127.0.0.1:9000/chat/query?", params={"q": q, "chat_id": chat_id}
     )
 
 
 def close_chat(request):
     chat_id = request.GET.get("chat_id")
-    return HttpResponseRedirect(f"http://35.215.137.189/chat/close?chat_id={chat_id}")
+    return HttpResponseRedirect(f"http://127.0.0.1:9000/chat/close?chat_id={chat_id}")
 
 
 @login_required(login_url="/login/")
@@ -108,7 +108,7 @@ def actionstrain(request: HttpRequest):
             return HttpResponseRedirect(reverse("actions"))
 
         res = requests.put(
-            f"http://35.215.137.189/actions/train?username={username}",
+            f"http://127.0.0.1:9000/actions/train?username={username}",
             data=data,
             headers={"Content-Type": "application/json"},
         )
@@ -130,7 +130,7 @@ def traindocuments(request: HttpRequest):
         # get username query param
         username = form.data["username"]
         res = requests.get(
-            f"http://35.215.137.189/documents/train?username={username}",
+            f"http://127.0.0.1:9000/documents/train?username={username}",
             headers={"Content-Type": "application/json"},
         )
         print(res.content)
@@ -161,7 +161,7 @@ def uploaddocument(request: HttpRequest):
         print(username)
 
         response = requests.post(
-            f"http://35.215.137.189/documents/upload",
+            f"http://127.0.0.1:9000/documents/upload",
             files={"file": file},
             params={"username": username},
         )

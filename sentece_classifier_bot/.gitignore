@@ -8,3 +8,5 @@ __pycache__/
 test.json
 test.txt
 test.ipynb
+test_voice.ipynb
+test_voice.py

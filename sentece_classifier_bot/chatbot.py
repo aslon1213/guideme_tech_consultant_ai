@@ -15,14 +15,31 @@ from langchain_community.document_loaders.directory import DirectoryLoader
 from langchain_community.vectorstores import Chroma
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain_core.documents import Document
+from langchain_openai import ChatOpenAI
+from langchain.prompts import PromptTemplate
+
+# from langchain_core.documents import Document
 from langchain_community.embeddings import HuggingFaceEmbeddings
 import chromadb
 
 
 class AnotherException(Exception):
     pass
+
+
+# Define your custom prompt template
+custom_prompt_template = """You are a helpful assistant that provides answers to user questions using the provided context and additional knowledge when necessary.
+
+Context: {context}, {user_data}
+
+
+
+Helpful Answer:"""
+
+custom_prompt = PromptTemplate(
+    input_variables=["context", "user_data" "question"],
+    template=custom_prompt_template,
+)
 
 
 class Chatbot:
@@ -35,7 +52,8 @@ class Chatbot:
         print("Got results from openai: ", results)
         return results
 
-    def LoadVectorstoreandChatbot(self, username):
+    def LoadVectorstoreandChatbot(self, username, user_data: dict):
+        # if os.getenv("OPENAI_API_KEY") != None:
         os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_KEY")
         os.environ["LANGCHAIN_TRACING_V2"] = "false"
         # os.environ["LANGCHAIN_API_KEY"] = ""
@@ -47,6 +65,26 @@ class Chatbot:
         #     chunk_size=1000, chunk_overlap=200
         # )
         # splits = text_splitter.split_documents(docs)
+        user_data_str = json.dumps(user_data)
+        user_data_str = user_data_str.replace("{", "")
+        user_data_str = user_data_str.replace("}", "")
+        custom_prompt_template = (
+            """You are a helpful assistant that provides answers to user questions using the provided context and additional knowledge when necessary. Do not dictate the information about passport_number and id if question asks about it, just asnwer I cant this information. Try to be nice a bit and answer in a way that user can understand.
+        
+        Context: {context} ----- 
+        user data =  + """
+            + user_data_str
+            + """
+        ---------
+        Question: {question}
+
+        Helpful Answer:"""
+        )
+
+        custom_prompt = PromptTemplate(
+            input_variables=["context", "question"],
+            template=custom_prompt_template,
+        )
 
         def format_docs(docs):
             return "\n\n".join(doc.page_content for doc in docs)
@@ -60,13 +98,20 @@ class Chatbot:
             embedding_function=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2"),
         )
         retriever = vectorstore.as_retriever()
-        prompt = hub.pull("rlm/rag-prompt")
-        llm = ChatOpenAI(model_name="gpt-4", temperature=0)
+        prompt = custom_prompt
+        llm = ChatOpenAI(
+            model_name="gpt-4",
+            temperature=0,
+        )
         # gpt-4-turbo-preview
         # gpt -3.5-turbo
         # gpt-4-0125-preview
+        user_data_json = json.dumps(user_data)
         rag_chain = (
-            {"context": retriever | format_docs, "question": RunnablePassthrough()}
+            {
+                "context": retriever | format_docs,
+                "question": RunnablePassthrough(),
+            }
             | prompt
             | llm
             | StrOutputParser()
@@ -76,7 +121,7 @@ class Chatbot:
         self.vectorstore = vectorstore
 
     def FormatForGeneralAnswer(self, result):
-        print("Message from openai: ", result)
+        # print("Message from openai: ", result)
         if "I'm sorry" in result:
             raise AnotherException()
         return orjson.dumps({"type": "answer", "message": result})

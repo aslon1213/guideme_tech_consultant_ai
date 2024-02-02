@@ -60,6 +60,8 @@ func (app *App) Close() {
 
 func (app *App) RegisterRoutes() {
 
+	routes.RegisterWsRoutes(app.Fiber, app.Middleware, app.Handlers)
+
 	routes.RegisterActionsRoutes(app.Fiber, app.Middleware, app.Handlers)
 	routes.RegisterChatRoutes(app.Fiber, app.Middleware, app.Handlers)
 	routes.RegisterDocumentsRoutes(app.Fiber, app.Middleware, app.Handlers)

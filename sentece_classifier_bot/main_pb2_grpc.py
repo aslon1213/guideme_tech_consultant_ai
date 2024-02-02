@@ -34,9 +34,24 @@ class ToClassifierStub(object):
                 request_serializer=main__pb2.Query.SerializeToString,
                 response_deserializer=main__pb2.ActionFull.FromString,
                 )
+        self.GiveAudioAnswerForQuery = channel.unary_unary(
+                '/toclassifier.ToClassifier/GiveAudioAnswerForQuery',
+                request_serializer=main__pb2.Query.SerializeToString,
+                response_deserializer=main__pb2.GeneralAnswer.FromString,
+                )
+        self.GiveAudioAnswerOrJustTextAnswer = channel.unary_unary(
+                '/toclassifier.ToClassifier/GiveAudioAnswerOrJustTextAnswer',
+                request_serializer=main__pb2.Query.SerializeToString,
+                response_deserializer=main__pb2.AudoWithText.FromString,
+                )
         self.SaveDocuments = channel.unary_unary(
                 '/toclassifier.ToClassifier/SaveDocuments',
                 request_serializer=main__pb2.Documents.SerializeToString,
+                response_deserializer=main__pb2.GeneralAnswer.FromString,
+                )
+        self.GetGreetingMessage = channel.unary_unary(
+                '/toclassifier.ToClassifier/GetGreetingMessage',
+                request_serializer=main__pb2.Username.SerializeToString,
                 response_deserializer=main__pb2.GeneralAnswer.FromString,
                 )
         self.ClassifyAndAnswer = channel.unary_unary(
@@ -83,7 +98,25 @@ class ToClassifierServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GiveAudioAnswerForQuery(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GiveAudioAnswerOrJustTextAnswer(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def SaveDocuments(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetGreetingMessage(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -131,9 +164,24 @@ def add_ToClassifierServicer_to_server(servicer, server):
                     request_deserializer=main__pb2.Query.FromString,
                     response_serializer=main__pb2.ActionFull.SerializeToString,
             ),
+            'GiveAudioAnswerForQuery': grpc.unary_unary_rpc_method_handler(
+                    servicer.GiveAudioAnswerForQuery,
+                    request_deserializer=main__pb2.Query.FromString,
+                    response_serializer=main__pb2.GeneralAnswer.SerializeToString,
+            ),
+            'GiveAudioAnswerOrJustTextAnswer': grpc.unary_unary_rpc_method_handler(
+                    servicer.GiveAudioAnswerOrJustTextAnswer,
+                    request_deserializer=main__pb2.Query.FromString,
+                    response_serializer=main__pb2.AudoWithText.SerializeToString,
+            ),
             'SaveDocuments': grpc.unary_unary_rpc_method_handler(
                     servicer.SaveDocuments,
                     request_deserializer=main__pb2.Documents.FromString,
+                    response_serializer=main__pb2.GeneralAnswer.SerializeToString,
+            ),
+            'GetGreetingMessage': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetGreetingMessage,
+                    request_deserializer=main__pb2.Username.FromString,
                     response_serializer=main__pb2.GeneralAnswer.SerializeToString,
             ),
             'ClassifyAndAnswer': grpc.unary_unary_rpc_method_handler(
@@ -230,6 +278,40 @@ class ToClassifier(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def GiveAudioAnswerForQuery(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/toclassifier.ToClassifier/GiveAudioAnswerForQuery',
+            main__pb2.Query.SerializeToString,
+            main__pb2.GeneralAnswer.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GiveAudioAnswerOrJustTextAnswer(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/toclassifier.ToClassifier/GiveAudioAnswerOrJustTextAnswer',
+            main__pb2.Query.SerializeToString,
+            main__pb2.AudoWithText.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def SaveDocuments(request,
             target,
             options=(),
@@ -242,6 +324,23 @@ class ToClassifier(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/toclassifier.ToClassifier/SaveDocuments',
             main__pb2.Documents.SerializeToString,
+            main__pb2.GeneralAnswer.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetGreetingMessage(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/toclassifier.ToClassifier/GetGreetingMessage',
+            main__pb2.Username.SerializeToString,
             main__pb2.GeneralAnswer.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
