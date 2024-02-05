@@ -9,7 +9,7 @@ import (
 
 func RegisterChatRoutes(fb *fiber.App, md *middlewares.MiddlewaresWrapper, handlers *handlers.HandlersWrapper) {
 
-	chat := fb.Group("/chat")
+	chat := fb.Group("/chat", md.ApiKeyMiddleware)
 	chath := handlers.ChatHandlers
 	chat.Get("/open", chath.OpenChat)
 	chat.Get("/query", chath.Query)

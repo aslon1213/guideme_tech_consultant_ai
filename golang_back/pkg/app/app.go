@@ -15,6 +15,7 @@ type App struct {
 	Fiber      *fiber.App
 	Ctx        context.Context
 	Mongo      *mongo.Client
+	Redis      *initializers.RedisClient
 	Handlers   *handlers.HandlersWrapper
 	Middleware *middlewares.MiddlewaresWrapper
 }
@@ -35,10 +36,19 @@ func New() *App {
 	if err != nil {
 		panic(err)
 	}
+
+	// get redis client
+	redisClient, err := initializers.NewRedisClient()
+	if err != nil {
+		panic(err)
+	}
+	app.Redis = redisClient
+
 	app.Mongo = mongoClient
 	fiber := initializers.NewFiber()
 	app.Fiber = fiber
-	app.Handlers = handlers.New(app.Ctx, app.Mongo)
+	app.Handlers = handlers.New(app.Ctx, app.Mongo, redisClient)
+	app.Middleware = middlewares.New(app.Ctx, app.Mongo, redisClient)
 	app.RegisterRoutes()
 	return app
 }
@@ -60,8 +70,9 @@ func (app *App) Close() {
 
 func (app *App) RegisterRoutes() {
 
-	routes.RegisterWsRoutes(app.Fiber, app.Middleware, app.Handlers)
+	routes.RegisterAuthRoutes(app.Fiber, app.Middleware, app.Handlers)
 
+	routes.RegisterWsRoutes(app.Fiber, app.Middleware, app.Handlers)
 	routes.RegisterActionsRoutes(app.Fiber, app.Middleware, app.Handlers)
 	routes.RegisterChatRoutes(app.Fiber, app.Middleware, app.Handlers)
 	routes.RegisterDocumentsRoutes(app.Fiber, app.Middleware, app.Handlers)
