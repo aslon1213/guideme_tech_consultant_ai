@@ -1,6 +1,7 @@
 package initializers
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
@@ -15,10 +16,11 @@ func NewFiber() *fiber.App {
 	})
 	app.Use(logger.New())
 	app.Get("/monitor", monitor.New())
-	if os.Getenv("FIBER_MODE") != "dev" {
+	if os.Getenv("FIBER_MODE") == "production" {
 		// recover_config := recover.Config{
 
 		// }
+		fmt.Println("Using recover middleware")
 		app.Use(recover.New())
 	}
 	app.Static("/static", "./pkg/web/static", fiber.Static{

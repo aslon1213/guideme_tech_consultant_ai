@@ -100,8 +100,8 @@ func (au *AuthenticationHandlers) Login(c *fiber.Ctx) error {
 	expire_time := time.Now().Add(24 * 10 * time.Hour) // 10 days
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		// "foo":  "bar",
-		"user": user.Username,
-		"nbf":  expire_time.Unix(),
+		"user":   user.Username,
+		"expire": expire_time,
 	})
 
 	// Sign and get the complete encoded token as a string using the secret

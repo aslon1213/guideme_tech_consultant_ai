@@ -48,6 +48,7 @@ func (au *AuthenticationHandlers) CreateKey(c *fiber.Ctx) error {
 	api_key.Name = c.Query("name")
 	api_key.Active = true
 	api_key.CreatedAt = time.Now()
+	api_key.ExpiresAt = time.Now().Add(time.Hour * 24 * time.Duration(expire))
 	// push to mongo - api_keys collection and client_collection
 	_, err = au.api_keys_collection.InsertOne(au.ctx, api_key)
 	if err != nil {

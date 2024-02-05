@@ -54,12 +54,13 @@ func (md *MiddlewaresWrapper) AuthenticationMiddleware(c *fiber.Ctx) error {
 		fmt.Println("MY_SECRET: ", mysecret)
 		return []byte(mysecret), nil
 	})
-	// if err != nil {
-	// 	return c.Status(401).JSON(fiber.Map{
-	// 		"error": "Invalid token",
-	// 		"err":   err.Error(),
-	// 	})
-	// }
+
+	if err != nil {
+		return c.Status(401).JSON(fiber.Map{
+			"error": "Invalid token",
+			"err":   err.Error(),
+		})
+	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
 		client := &models.Client{}
@@ -86,6 +87,12 @@ func (md *MiddlewaresWrapper) AuthenticationMiddleware(c *fiber.Ctx) error {
 func (md *MiddlewaresWrapper) ApiKeyMiddleware(c *fiber.Ctx) error {
 	fmt.Println("in api key middleware")
 	apiKey := c.Get("api-key")
+	// check if apiKey start with skg_
+	if apiKey[:4] != "skg_" {
+		return c.Status(401).JSON(
+			fiber.Map{"error": "Invalid API key - key should start with skg_"},
+		)
+	}
 
 	// check in databases
 	ok := models.ValidateApiKey(apiKey, md.api_keys_collection, md.redisClient)
