@@ -1,5 +1,4 @@
 *.env*
 main
-dockerfiles/docker_commands.txt
 test.html
 main.go
