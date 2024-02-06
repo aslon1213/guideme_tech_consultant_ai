@@ -15,7 +15,7 @@ rpc GiveAudioAnswerForQuery (Query) returns (GeneralAnswer) {}
 rpc GiveAudioAnswerOrJustTextAnswer(Query) returns (AudoWithText) {}
 
 rpc SaveDocuments(Documents) returns (GeneralAnswer) {}
-rpc GetGreetingMessage(Username) returns (GeneralAnswer) {}
+rpc GetGreetingMessage(Query) returns (GeneralAnswer) {}
 
 // to classifier service
 rpc ClassifyAndAnswer (Query) returns (GeneralAnswer) {}

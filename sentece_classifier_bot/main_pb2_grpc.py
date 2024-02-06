@@ -51,7 +51,7 @@ class ToClassifierStub(object):
                 )
         self.GetGreetingMessage = channel.unary_unary(
                 '/toclassifier.ToClassifier/GetGreetingMessage',
-                request_serializer=main__pb2.Username.SerializeToString,
+                request_serializer=main__pb2.Query.SerializeToString,
                 response_deserializer=main__pb2.GeneralAnswer.FromString,
                 )
         self.ClassifyAndAnswer = channel.unary_unary(
@@ -181,7 +181,7 @@ def add_ToClassifierServicer_to_server(servicer, server):
             ),
             'GetGreetingMessage': grpc.unary_unary_rpc_method_handler(
                     servicer.GetGreetingMessage,
-                    request_deserializer=main__pb2.Username.FromString,
+                    request_deserializer=main__pb2.Query.FromString,
                     response_serializer=main__pb2.GeneralAnswer.SerializeToString,
             ),
             'ClassifyAndAnswer': grpc.unary_unary_rpc_method_handler(
@@ -340,7 +340,7 @@ class ToClassifier(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/toclassifier.ToClassifier/GetGreetingMessage',
-            main__pb2.Username.SerializeToString,
+            main__pb2.Query.SerializeToString,
             main__pb2.GeneralAnswer.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

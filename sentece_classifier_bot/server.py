@@ -50,11 +50,15 @@ user_data = {
     "gender": "Male",
     "passport_number": "2966981717",
     "money": 1000000,
-    "credit_left": 120000,
+    "credit_left": {
+        "amount": 120000,
+        "currency": "soum",
+        "should_be_paid": "11.02.2024",
+    },
     "credit_history": [
-        {"date": "11.11.2023", "amount": 100000},
-        {"date": "11.12.2024", "amount": 100000},
-        {"date": "11.01.2024", "amount": 100000},
+        {"date": "11.11.2023", "amount": 100000, "currency": "soum"},
+        {"date": "11.12.2024", "amount": 100000, "currency": "soum"},
+        {"date": "11.01.2024", "amount": 100000, "currency": "soum"},
     ],
 }
 ############################################################################################################
@@ -89,9 +93,13 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
 
     def GetGreetingMessage(self, request, context):
         username = request.username
-        with open("./audios/salom.mp3", "rb") as f:
-            audio = f.read()
-            return GeneralAnswer(answer=audio)
+        chat_id = request.chat_id
+        chatbot = opened_chats[chat_id][1]
+        print("Getting greeting message")
+        answer = chatbot.GetGreetingMessage()
+        # convert answer to bytes
+
+        return GeneralAnswer(answer=str.encode(answer))
 
     def SaveDocuments(self, request, context):
         username = request.username
