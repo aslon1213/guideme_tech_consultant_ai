@@ -50,11 +50,14 @@ user_data = {
     "gender": "Male",
     "passport_number": "2966981717",
     "money": 1000000,
-    "credit_left": 120000,
+    "credit_left": {
+        "amount": 120000,
+        "currency": "soum",
+    },
     "credit_history": [
-        {"date": "11.11.2023", "amount": 100000},
-        {"date": "11.12.2024", "amount": 100000},
-        {"date": "11.01.2024", "amount": 100000},
+        {"date": "11.11.2023", "amount": 100000, "currency":"soum"},
+        {"date": "11.12.2024", "amount": 100000, "currency":"soum"},
+        {"date": "11.01.2024", "amount": 100000, "currency":"soum"},
     ],
 }
 ############################################################################################################
