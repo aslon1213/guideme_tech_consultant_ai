@@ -44,11 +44,11 @@ sentence_transformer_ef_huggingface = HuggingFaceEmbeddings(
 # user for a testing purposes - it will be deleted ofc immidiately before production
 user_data = {
     "id": {"$oid": "65bb9447fc13ae5136234b42"},
-    "first_name": "Ennis",
-    "last_name": "Josephoff",
-    "email": "ejosephoff0@bloglines.com",
+    "first_name": "Mekhriddin",
+    "last_name": "Jumaev",
+    "email": "mekhriddinjumaev1@bloglines.com",
     "gender": "Male",
-    "passport_number": "2966981717",
+    "passport_number": "AB1234567",
     "money": 1000000,
     "credit_left": {
         "amount": 120000,
