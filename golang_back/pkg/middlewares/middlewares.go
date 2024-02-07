@@ -51,7 +51,6 @@ func (md *MiddlewaresWrapper) AuthenticationMiddleware(c *fiber.Ctx) error {
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
 		mysecret := os.Getenv("MY_SECRET")
-		fmt.Println("MY_SECRET: ", mysecret)
 		return []byte(mysecret), nil
 	})
 

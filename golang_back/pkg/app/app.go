@@ -6,6 +6,8 @@ import (
 	"aslon1213/customer_support_bot/pkg/middlewares"
 	"aslon1213/customer_support_bot/pkg/routes"
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -50,6 +52,7 @@ func New() *App {
 	app.Handlers = handlers.New(app.Ctx, app.Mongo, redisClient)
 	app.Middleware = middlewares.New(app.Ctx, app.Mongo, redisClient)
 	app.RegisterRoutes()
+
 	return app
 }
 
@@ -77,4 +80,16 @@ func (app *App) RegisterRoutes() {
 	routes.RegisterChatRoutes(app.Fiber, app.Middleware, app.Handlers)
 	routes.RegisterDocumentsRoutes(app.Fiber, app.Middleware, app.Handlers)
 	routes.RegisterAdminDashboardRoutes(app.Fiber, app.Middleware, app.Handlers)
+}
+
+func (a *App) LoadUsagesFromRedisToDatabase() {
+	for {
+		time.Sleep(5 * time.Minute)
+		fmt.Println("Loading usages from redis to database")
+
+		// read from redis
+		// write to database
+		// calculate usage
+		// write to database
+	}
 }

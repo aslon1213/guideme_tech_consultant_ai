@@ -61,12 +61,16 @@ message ChatID {
 message QueryAnswer {
     bool actions = 1;
     bytes answer = 2;
+    float input_token_length = 3;
+    int64 output_token_length = 4;
 }
 
 
 message GeneralAnswer {
     bytes answer = 1;
     string orJsonAnswer = 2;
+    float input_token_length = 3;
+    int64 output_token_length = 4;
 }
 
 
@@ -109,6 +113,8 @@ message Document {
 
 message TrainResponse {
     string message = 1;
+    float input_token_length = 2;
+    int64 output_token_length = 3;
 }
 
 message SearchRequest {
@@ -123,4 +129,6 @@ message ChatRequest {
 
 message ChatResponse {
     string text = 1;
+    float input_token_length = 2;
+    int64 output_token_length = 3;
 }

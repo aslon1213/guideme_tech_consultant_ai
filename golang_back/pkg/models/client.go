@@ -10,13 +10,14 @@ type User struct {
 }
 
 type Client struct {
-	User         `bson:",inline"`
-	Documents    []Document    `json:"documents,omitempty" bson:"documents"`
-	Actionslist  []Action      `json:"actionslist,omitempty" bson:"actionslist"`
-	ApiKeys      []string      `json:"api_keys,omitempty" bson:"api_keys"`
-	Balance      float64       `json:"balance,omitempty" bson:"balance"`
-	Transactions []Transaction `json:"transactions,omitempty" bson:"transactions"`
-	UsageInfo    UsageInfo     `json:"usage_info,omitempty" bson:"usage_info"`
+	User            `bson:",inline"`
+	Documents       []Document       `json:"documents,omitempty" bson:"documents"`
+	Actionslist     []Action         `json:"actionslist,omitempty" bson:"actionslist"`
+	ApiKeys         []string         `json:"api_keys,omitempty" bson:"api_keys"`
+	Balance         float64          `json:"balance,omitempty" bson:"balance"`
+	Transactions    []Transaction    `json:"transactions,omitempty" bson:"transactions"`
+	UsageInfo       UsageInfo        `json:"usage_info,omitempty" bson:"usage_info"`
+	PromptTemplates []PromptTemplate `json:"prompt_templates,omitempty" bson:"prompt_templates"`
 }
 
 type UsageInfo struct {
@@ -27,4 +28,10 @@ type UsageInfo struct {
 type Transaction struct {
 	Amount   float64 `json:"amount" bson:"amount"`
 	Positive bool    `json:"positive" bson:"positive"`
+}
+
+type PromptTemplate struct {
+	Name            string `json:"name" bson:"name"`
+	GreetingMessage string `json:"greeting_message" bson:"greeting_message"`
+	Content         string `json:"content" bson:"content"`
 }
