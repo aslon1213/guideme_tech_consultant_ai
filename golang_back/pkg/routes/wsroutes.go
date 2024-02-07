@@ -42,7 +42,7 @@ func MakeACall(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "chat_id is required"})
 	}
 
-	conn, ok := SavedConnections[username]
+	conn, ok := SavedConnections[chat_id]
 	if !ok {
 		return c.JSON(fiber.Map{"error": "user is not connected"})
 	}
@@ -68,9 +68,9 @@ func MakeACall(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message": "call is made"})
 }
 
-func ClearConnection(username string) {
-	delete(SavedConnections, username)
-	fmt.Println("Deleted the connection of ", username)
+func ClearConnection(chatid string) {
+	delete(SavedConnections, chatid)
+	fmt.Println("Deleted the connection of ", chatid)
 	fmt.Println("Saved Connections: ", SavedConnections)
 }
 
@@ -109,7 +109,7 @@ func TestWEbsocket(c *websocket.Conn) {
 		return
 	}
 	fmt.Println("waiting stopped 1")
-	SavedConnections[username] = c
+	SavedConnections[chat_id_client.ChatId] = c
 	// get audio message from python server
 	fmt.Println("chat id:", chat_id_client.ChatId)
 	for {
@@ -190,7 +190,7 @@ func TestWEbsocket(c *websocket.Conn) {
 		c.WriteJSON(map[string]string{"text": err.Error()})
 	}
 	fmt.Println("Closed the chat id:", chat_id_client.ChatId)
-	ClearConnection(username)
+	ClearConnection(chat_id_client.ChatId)
 	c.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 	// close the chat with python server
 }
