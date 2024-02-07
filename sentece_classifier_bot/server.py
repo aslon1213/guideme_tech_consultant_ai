@@ -56,7 +56,7 @@ user_data = {
         "should_be_paid": "11.02.2024",
     },
     "if_not_paid_on_time_policy": "You will be charged fine with the amount equal to 1 minimum wage in uzbekistan after 15 days of the deadline - also it can drastically damage your credit history",
-    "credit_history": [
+    "credit_payment_history": [
         {"date": "11.11.2023", "amount": 100000, "currency": "soum"},
         {"date": "11.12.2024", "amount": 100000, "currency": "soum"},
         {"date": "11.01.2024", "amount": 100000, "currency": "soum"},
