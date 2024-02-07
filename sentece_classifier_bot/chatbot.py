@@ -48,7 +48,7 @@ class Chatbot:
         self.vectorstore = None
 
     def GetGreetingMessage(self):
-        return "Hello, I am a smart assistant of Agrobank. I am created to be helpful to you. You have a payment for a loan that should be paid by the eleventh of this month for a amount of '120000' soums. Do you have any question ?"
+        return 'Hello, I am a smart assistant of Agrobank. I am created to be helpful to you. You have a payment for a loan that should be paid by the eleventh of this month for a amount of "120000" soums. Do you have any question ?'
 
     def Query(self, query_string):
         results = self.chatbot.invoke(query_string)

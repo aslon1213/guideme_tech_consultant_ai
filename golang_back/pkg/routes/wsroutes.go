@@ -153,7 +153,7 @@ func TestWEbsocket(c *websocket.Conn) {
 			for _, match := range matches {
 				// delete , from the match
 				replaced := strings.ReplaceAll(match, ",", "")
-				replaced = "'" + replaced + "'"
+				// replaced = "'" + replaced + "'"
 				// replace the match with the replaced string
 				input = strings.Replace(input, match, replaced, 1)
 			}
