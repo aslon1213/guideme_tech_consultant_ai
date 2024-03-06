@@ -47,6 +47,9 @@ class Chatbot:
         self.chatbot = None
         self.vectorstore = None
 
+    def GetGreetingMessage(self):
+        return "Hello, I am a smart assistant of Agrobank. I am created to be helpful to you. You have a payment for a loan that should be paid by the eleventh of this month for a amount of \u0022120000\u0022 soums. Do you have any question ?"
+
     def Query(self, query_string):
         results = self.chatbot.invoke(query_string)
         print("Got results from openai: ", results)
@@ -69,7 +72,7 @@ class Chatbot:
         user_data_str = user_data_str.replace("{", "")
         user_data_str = user_data_str.replace("}", "")
         custom_prompt_template = (
-            """You are a helpful assistant that provides answers to user questions using the provided context and additional knowledge when necessary. Do not dictate the information about passport_number and id if question asks about it, just asnwer I cant this information. Try to be nice a bit and answer in a way that user can understand.
+            """You are a helpful assistant that provides answers to user questions using the provided context and additional knowledge when necessary. Do not dictate the information about passport_number and id if question asks about it, just asnwer I cant this information. Try to be nice a bit and answer in a way that user can understand. If output contains date then convert date to word format like 11th November 2023 to eleventh November two thousand and twenty threeth year. If asked about who you are, then answer I am agrobank's smart assistant.
         
         Context: {context} ----- 
         user data =  + """

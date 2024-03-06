@@ -7,7 +7,10 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
+	"regexp"
+	"strings"
 
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
@@ -36,12 +39,17 @@ func MakeACall(c *fiber.Ctx) error {
 	if username == "" {
 		username = "test"
 	}
-	conn, ok := SavedConnections[username]
+	chat_id := c.Query("chat_id")
+	if chat_id == "" {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "chat_id is required"})
+	}
+
+	conn, ok := SavedConnections[chat_id]
 	if !ok {
 		return c.JSON(fiber.Map{"error": "user is not connected"})
 	}
 	// get audio message from python server
-	conn.WriteJSON(map[string]string{"answer": "audio", "action": "call"})
+	conn.WriteJSON(map[string]string{"answer": "text", "action": "call"})
 	con, err := grpc.Dial(os.Getenv("CLASSIFIER"), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Println(err)
@@ -49,21 +57,22 @@ func MakeACall(c *fiber.Ctx) error {
 	}
 	defer con.Close()
 	client := toclassifier.NewToClassifierClient(con)
-	answer, err := client.GetGreetingMessage(context.Background(), &toclassifier.Username{
+	answer, err := client.GetGreetingMessage(context.Background(), &toclassifier.Query{
 		Username: username,
+		ChatId:   chat_id,
 	})
 	if err != nil {
 		log.Println(err)
 		return c.JSON(fiber.Map{"error": err.Error()})
 	}
-	conn.WriteMessage(websocket.BinaryMessage, answer.Answer)
+	// parse the answer and send it to the user
+	conn.WriteMessage(websocket.TextMessage, answer.Answer)
 	return c.JSON(fiber.Map{"message": "call is made"})
-
 }
 
-func ClearConnection(username string) {
-	delete(SavedConnections, username)
-	fmt.Println("Deleted the connection of ", username)
+func ClearConnection(chatid string) {
+	delete(SavedConnections, chatid)
+	fmt.Println("Deleted the connection of ", chatid)
 	fmt.Println("Saved Connections: ", SavedConnections)
 }
 
@@ -102,8 +111,9 @@ func TestWEbsocket(c *websocket.Conn) {
 		return
 	}
 	fmt.Println("waiting stopped 1")
-	SavedConnections[username] = c
+	SavedConnections[chat_id_client.ChatId] = c
 	// get audio message from python server
+	fmt.Println("chat id:", chat_id_client.ChatId)
 	for {
 
 		// read query,answer,question or anthing sentence from client
@@ -135,11 +145,32 @@ func TestWEbsocket(c *websocket.Conn) {
 				break
 			}
 		} else {
+			// Input string
+			input := answer.Text
+			regex := regexp.MustCompile(`\d{1,3}(,\d{3})*`)
+
+			// Find all matches of numbers in the input string
+			matches := regex.FindAllString(input, -1)
+			// Replace commas with empty strings in each match
+			for _, match := range matches {
+				// delete , from the match
+				replaced := strings.ReplaceAll(match, ",", "")
+				// replaced = "'" + replaced + "'"
+				// replace the match with the replaced string
+				input = strings.Replace(input, match, replaced, 1)
+			}
+
+			// Replace commas with empty string
+			for _, match := range matches {
+				replaced := strings.ReplaceAll(match, ",", "")
+				input = strings.Replace(input, match, replaced, 1)
+			}
 			if err = c.WriteJSON(map[string]string{"answer": "text"}); err != nil {
 				log.Println("write:", err)
 				break
 			}
-			if err = c.WriteMessage(websocket.TextMessage, []byte(answer.Text)); err != nil {
+			log.Println("after modifitcation input:", input)
+			if err = c.WriteMessage(websocket.TextMessage, []byte(input)); err != nil {
 				log.Println("write:", err)
 				break
 			}
@@ -162,7 +193,7 @@ func TestWEbsocket(c *websocket.Conn) {
 		c.WriteJSON(map[string]string{"text": err.Error()})
 	}
 	fmt.Println("Closed the chat id:", chat_id_client.ChatId)
-	ClearConnection(username)
+	ClearConnection(chat_id_client.ChatId)
 	c.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 	// close the chat with python server
 }

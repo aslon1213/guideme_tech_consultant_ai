@@ -29,7 +29,7 @@ type ToClassifierClient interface {
 	GiveAudioAnswerForQuery(ctx context.Context, in *Query, opts ...grpc.CallOption) (*GeneralAnswer, error)
 	GiveAudioAnswerOrJustTextAnswer(ctx context.Context, in *Query, opts ...grpc.CallOption) (*AudoWithText, error)
 	SaveDocuments(ctx context.Context, in *Documents, opts ...grpc.CallOption) (*GeneralAnswer, error)
-	GetGreetingMessage(ctx context.Context, in *Username, opts ...grpc.CallOption) (*GeneralAnswer, error)
+	GetGreetingMessage(ctx context.Context, in *Query, opts ...grpc.CallOption) (*GeneralAnswer, error)
 	// to classifier service
 	ClassifyAndAnswer(ctx context.Context, in *Query, opts ...grpc.CallOption) (*GeneralAnswer, error)
 	OpenChat(ctx context.Context, in *Query, opts ...grpc.CallOption) (*ChatID, error)
@@ -132,7 +132,7 @@ func (c *toClassifierClient) SaveDocuments(ctx context.Context, in *Documents, o
 	return out, nil
 }
 
-func (c *toClassifierClient) GetGreetingMessage(ctx context.Context, in *Username, opts ...grpc.CallOption) (*GeneralAnswer, error) {
+func (c *toClassifierClient) GetGreetingMessage(ctx context.Context, in *Query, opts ...grpc.CallOption) (*GeneralAnswer, error) {
 	out := new(GeneralAnswer)
 	err := c.cc.Invoke(ctx, "/toclassifier.ToClassifier/GetGreetingMessage", in, out, opts...)
 	if err != nil {
@@ -179,7 +179,7 @@ type ToClassifierServer interface {
 	GiveAudioAnswerForQuery(context.Context, *Query) (*GeneralAnswer, error)
 	GiveAudioAnswerOrJustTextAnswer(context.Context, *Query) (*AudoWithText, error)
 	SaveDocuments(context.Context, *Documents) (*GeneralAnswer, error)
-	GetGreetingMessage(context.Context, *Username) (*GeneralAnswer, error)
+	GetGreetingMessage(context.Context, *Query) (*GeneralAnswer, error)
 	// to classifier service
 	ClassifyAndAnswer(context.Context, *Query) (*GeneralAnswer, error)
 	OpenChat(context.Context, *Query) (*ChatID, error)
@@ -212,7 +212,7 @@ func (UnimplementedToClassifierServer) GiveAudioAnswerOrJustTextAnswer(context.C
 func (UnimplementedToClassifierServer) SaveDocuments(context.Context, *Documents) (*GeneralAnswer, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SaveDocuments not implemented")
 }
-func (UnimplementedToClassifierServer) GetGreetingMessage(context.Context, *Username) (*GeneralAnswer, error) {
+func (UnimplementedToClassifierServer) GetGreetingMessage(context.Context, *Query) (*GeneralAnswer, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGreetingMessage not implemented")
 }
 func (UnimplementedToClassifierServer) ClassifyAndAnswer(context.Context, *Query) (*GeneralAnswer, error) {
@@ -372,7 +372,7 @@ func _ToClassifier_SaveDocuments_Handler(srv interface{}, ctx context.Context, d
 }
 
 func _ToClassifier_GetGreetingMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Username)
+	in := new(Query)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -384,7 +384,7 @@ func _ToClassifier_GetGreetingMessage_Handler(srv interface{}, ctx context.Conte
 		FullMethod: "/toclassifier.ToClassifier/GetGreetingMessage",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ToClassifierServer).GetGreetingMessage(ctx, req.(*Username))
+		return srv.(ToClassifierServer).GetGreetingMessage(ctx, req.(*Query))
 	}
 	return interceptor(ctx, in, info, handler)
 }

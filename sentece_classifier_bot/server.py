@@ -44,20 +44,22 @@ sentence_transformer_ef_huggingface = HuggingFaceEmbeddings(
 # user for a testing purposes - it will be deleted ofc immidiately before production
 user_data = {
     "id": {"$oid": "65bb9447fc13ae5136234b42"},
-    "first_name": "Ennis",
-    "last_name": "Josephoff",
-    "email": "ejosephoff0@bloglines.com",
+    "first_name": "Mekhriddin",
+    "last_name": "Jumaev",
+    "email": "mekhriddinjumaev1@bloglines.com",
     "gender": "Male",
-    "passport_number": "2966981717",
+    "passport_number": "AB1234567",
     "money": 1000000,
     "credit_left": {
         "amount": 120000,
         "currency": "soum",
+        "should_be_paid": "11.02.2024",
     },
-    "credit_history": [
-        {"date": "11.11.2023", "amount": 100000, "currency":"soum"},
-        {"date": "11.12.2024", "amount": 100000, "currency":"soum"},
-        {"date": "11.01.2024", "amount": 100000, "currency":"soum"},
+    "if_not_paid_on_time_policy": "You will be charged fine with the amount equal to 1 minimum wage in uzbekistan after 15 days of the deadline - also it can drastically damage your credit history",
+    "credit_payment_history": [
+        {"date": "11.11.2023", "amount": 100000, "currency": "soum"},
+        {"date": "11.12.2024", "amount": 100000, "currency": "soum"},
+        {"date": "11.01.2024", "amount": 100000, "currency": "soum"},
     ],
 }
 ############################################################################################################
@@ -92,9 +94,13 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
 
     def GetGreetingMessage(self, request, context):
         username = request.username
-        with open("./audios/salom.mp3", "rb") as f:
-            audio = f.read()
-            return GeneralAnswer(answer=audio)
+        chat_id = request.chat_id
+        chatbot = opened_chats[chat_id][1]
+        print("Getting greeting message")
+        answer = chatbot.GetGreetingMessage()
+        # convert answer to bytes
+
+        return GeneralAnswer(answer=str.encode(answer))
 
     def SaveDocuments(self, request, context):
         username = request.username
