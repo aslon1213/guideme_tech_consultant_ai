@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nmain.proto\x12\x0ctoclassifier\"+\n\x0c\x41udoWithText\x12\r\n\x05\x61udio\x18\x01 \x01(\x0c\x12\x0c\n\x04text\x18\x02 \x01(\t\"J\n\x08JsonData\x12,\n\x02qa\x18\x01 \x03(\x0b\x32 .toclassifier.QuestionAnswerJson\x12\x10\n\x08username\x18\x02 \x01(\t\"6\n\x12QuestionAnswerJson\x12\x10\n\x08question\x18\x01 \x01(\t\x12\x0e\n\x06\x61nswer\x18\x02 \x01(\t\"\x1c\n\x08Username\x12\x10\n\x08username\x18\x01 \x01(\t\"X\n\tDocuments\x12\x14\n\x0c\x66ile_content\x18\x01 \x01(\x0c\x12\x10\n\x08\x66ilename\x18\x02 \x01(\t\x12\x11\n\tfile_type\x18\x03 \x01(\t\x12\x10\n\x08username\x18\x04 \x01(\t\"\x19\n\x06\x43hatID\x12\x0f\n\x07\x63hat_id\x18\x01 \x01(\t\".\n\x0bQueryAnswer\x12\x0f\n\x07\x61\x63tions\x18\x01 \x01(\x08\x12\x0e\n\x06\x61nswer\x18\x02 \x01(\x0c\"5\n\rGeneralAnswer\x12\x0e\n\x06\x61nswer\x18\x01 \x01(\x0c\x12\x14\n\x0corJsonAnswer\x18\x02 \x01(\t\"9\n\x05Query\x12\r\n\x05query\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\x0f\n\x07\x63hat_id\x18\x03 \x01(\t\"@\n\nActionFull\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x12\n\nproperties\x18\x02 \x03(\t\x12\x10\n\x08username\x18\x04 \x01(\t\"6\n\x06\x41\x63tion\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x0f\n\x07\x65lement\x18\x02 \x01(\t\x12\r\n\x05value\x18\x03 \x01(\t\"-\n\x08\x44ocument\x12\x0f\n\x07\x63ontext\x18\x01 \x01(\x0c\x12\x10\n\x08\x63\x61tegory\x18\x02 \x01(\t\" \n\rTrainResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"0\n\rSearchRequest\x12\r\n\x05query\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\"-\n\x0b\x43hatRequest\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x0c\n\x04text\x18\x02 \x01(\t\"\x1c\n\x0c\x43hatResponse\x12\x0c\n\x04text\x18\x01 \x01(\t*\x1e\n\nCategories\x12\x07\n\x03PDF\x10\x00\x12\x07\n\x03TXT\x10\x01\x32\xbd\x06\n\x0cToClassifier\x12N\n\x15TrainOnSavedDocuments\x12\x16.toclassifier.Username\x1a\x1b.toclassifier.TrainResponse\"\x00\x12I\n\x0cTrainActions\x12\x18.toclassifier.ActionFull\x1a\x1b.toclassifier.TrainResponse\"\x00(\x01\x12R\n\x19TrainonSavedDocumentsJson\x12\x16.toclassifier.JsonData\x1a\x1b.toclassifier.TrainResponse\"\x00\x12?\n\x0cQueryActions\x12\x13.toclassifier.Query\x1a\x18.toclassifier.ActionFull\"\x00\x12M\n\x17GiveAudioAnswerForQuery\x12\x13.toclassifier.Query\x1a\x1b.toclassifier.GeneralAnswer\"\x00\x12T\n\x1fGiveAudioAnswerOrJustTextAnswer\x12\x13.toclassifier.Query\x1a\x1a.toclassifier.AudoWithText\"\x00\x12G\n\rSaveDocuments\x12\x17.toclassifier.Documents\x1a\x1b.toclassifier.GeneralAnswer\"\x00\x12K\n\x12GetGreetingMessage\x12\x16.toclassifier.Username\x1a\x1b.toclassifier.GeneralAnswer\"\x00\x12G\n\x11\x43lassifyAndAnswer\x12\x13.toclassifier.Query\x1a\x1b.toclassifier.GeneralAnswer\"\x00\x12\x37\n\x08OpenChat\x12\x13.toclassifier.Query\x1a\x14.toclassifier.ChatID\"\x00\x12@\n\tCloseChat\x12\x14.toclassifier.ChatID\x1a\x1b.toclassifier.GeneralAnswer\"\x00\x42\x17Z\x15pkg/grpc/toclassifierb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nmain.proto\x12\x0ctoclassifier\"+\n\x0c\x41udoWithText\x12\r\n\x05\x61udio\x18\x01 \x01(\x0c\x12\x0c\n\x04text\x18\x02 \x01(\t\"J\n\x08JsonData\x12,\n\x02qa\x18\x01 \x03(\x0b\x32 .toclassifier.QuestionAnswerJson\x12\x10\n\x08username\x18\x02 \x01(\t\"6\n\x12QuestionAnswerJson\x12\x10\n\x08question\x18\x01 \x01(\t\x12\x0e\n\x06\x61nswer\x18\x02 \x01(\t\"\x1c\n\x08Username\x12\x10\n\x08username\x18\x01 \x01(\t\"X\n\tDocuments\x12\x14\n\x0c\x66ile_content\x18\x01 \x01(\x0c\x12\x10\n\x08\x66ilename\x18\x02 \x01(\t\x12\x11\n\tfile_type\x18\x03 \x01(\t\x12\x10\n\x08username\x18\x04 \x01(\t\"\x19\n\x06\x43hatID\x12\x0f\n\x07\x63hat_id\x18\x01 \x01(\t\"g\n\x0bQueryAnswer\x12\x0f\n\x07\x61\x63tions\x18\x01 \x01(\x08\x12\x0e\n\x06\x61nswer\x18\x02 \x01(\x0c\x12\x1a\n\x12input_token_length\x18\x03 \x01(\x02\x12\x1b\n\x13output_token_length\x18\x04 \x01(\x03\"n\n\rGeneralAnswer\x12\x0e\n\x06\x61nswer\x18\x01 \x01(\x0c\x12\x14\n\x0corJsonAnswer\x18\x02 \x01(\t\x12\x1a\n\x12input_token_length\x18\x03 \x01(\x02\x12\x1b\n\x13output_token_length\x18\x04 \x01(\x03\"9\n\x05Query\x12\r\n\x05query\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\x0f\n\x07\x63hat_id\x18\x03 \x01(\t\"z\n\x08\x44\x65\x65plink\x12\x0b\n\x03url\x18\x01 \x01(\t\x12\x32\n\x06params\x18\x02 \x03(\x0b\x32\".toclassifier.Deeplink.ParamsEntry\x1a-\n\x0bParamsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"Y\n\nActionFull\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x02 \x01(\t\x12(\n\x08\x44\x65\x65plink\x18\x03 \x01(\x0b\x32\x16.toclassifier.Deeplink\"6\n\x06\x41\x63tion\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x0f\n\x07\x65lement\x18\x02 \x01(\t\x12\r\n\x05value\x18\x03 \x01(\t\"-\n\x08\x44ocument\x12\x0f\n\x07\x63ontext\x18\x01 \x01(\x0c\x12\x10\n\x08\x63\x61tegory\x18\x02 \x01(\t\"Y\n\rTrainResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x1a\n\x12input_token_length\x18\x02 \x01(\x02\x12\x1b\n\x13output_token_length\x18\x03 \x01(\x03\"0\n\rSearchRequest\x12\r\n\x05query\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\"-\n\x0b\x43hatRequest\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x0c\n\x04text\x18\x02 \x01(\t\"U\n\x0c\x43hatResponse\x12\x0c\n\x04text\x18\x01 \x01(\t\x12\x1a\n\x12input_token_length\x18\x02 \x01(\x02\x12\x1b\n\x13output_token_length\x18\x03 \x01(\x03*\x1e\n\nCategories\x12\x07\n\x03PDF\x10\x00\x12\x07\n\x03TXT\x10\x01\x32\xbd\x06\n\x0cToClassifier\x12N\n\x15TrainOnSavedDocuments\x12\x16.toclassifier.Username\x1a\x1b.toclassifier.TrainResponse\"\x00\x12I\n\x0cTrainActions\x12\x18.toclassifier.ActionFull\x1a\x1b.toclassifier.TrainResponse\"\x00(\x01\x12R\n\x19TrainonSavedDocumentsJson\x12\x16.toclassifier.JsonData\x1a\x1b.toclassifier.TrainResponse\"\x00\x12?\n\x0cQueryActions\x12\x13.toclassifier.Query\x1a\x18.toclassifier.ActionFull\"\x00\x12M\n\x17GiveAudioAnswerForQuery\x12\x13.toclassifier.Query\x1a\x1b.toclassifier.GeneralAnswer\"\x00\x12T\n\x1fGiveAudioAnswerOrJustTextAnswer\x12\x13.toclassifier.Query\x1a\x1a.toclassifier.AudoWithText\"\x00\x12G\n\rSaveDocuments\x12\x17.toclassifier.Documents\x1a\x1b.toclassifier.GeneralAnswer\"\x00\x12K\n\x12GetGreetingMessage\x12\x16.toclassifier.Username\x1a\x1b.toclassifier.GeneralAnswer\"\x00\x12G\n\x11\x43lassifyAndAnswer\x12\x13.toclassifier.Query\x1a\x1b.toclassifier.GeneralAnswer\"\x00\x12\x37\n\x08OpenChat\x12\x13.toclassifier.Query\x1a\x14.toclassifier.ChatID\"\x00\x12@\n\tCloseChat\x12\x14.toclassifier.ChatID\x1a\x1b.toclassifier.GeneralAnswer\"\x00\x42\x17Z\x15pkg/grpc/toclassifierb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -22,8 +22,10 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'main_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['DESCRIPTOR']._options = None
   _globals['DESCRIPTOR']._serialized_options = b'Z\025pkg/grpc/toclassifier'
-  _globals['_CATEGORIES']._serialized_start=844
-  _globals['_CATEGORIES']._serialized_end=874
+  _globals['_DEEPLINK_PARAMSENTRY']._options = None
+  _globals['_DEEPLINK_PARAMSENTRY']._serialized_options = b'8\001'
+  _globals['_CATEGORIES']._serialized_start=1221
+  _globals['_CATEGORIES']._serialized_end=1251
   _globals['_AUDOWITHTEXT']._serialized_start=28
   _globals['_AUDOWITHTEXT']._serialized_end=71
   _globals['_JSONDATA']._serialized_start=73
@@ -37,25 +39,29 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['_CHATID']._serialized_start=325
   _globals['_CHATID']._serialized_end=350
   _globals['_QUERYANSWER']._serialized_start=352
-  _globals['_QUERYANSWER']._serialized_end=398
-  _globals['_GENERALANSWER']._serialized_start=400
-  _globals['_GENERALANSWER']._serialized_end=453
-  _globals['_QUERY']._serialized_start=455
-  _globals['_QUERY']._serialized_end=512
-  _globals['_ACTIONFULL']._serialized_start=514
-  _globals['_ACTIONFULL']._serialized_end=578
-  _globals['_ACTION']._serialized_start=580
-  _globals['_ACTION']._serialized_end=634
-  _globals['_DOCUMENT']._serialized_start=636
-  _globals['_DOCUMENT']._serialized_end=681
-  _globals['_TRAINRESPONSE']._serialized_start=683
-  _globals['_TRAINRESPONSE']._serialized_end=715
-  _globals['_SEARCHREQUEST']._serialized_start=717
-  _globals['_SEARCHREQUEST']._serialized_end=765
-  _globals['_CHATREQUEST']._serialized_start=767
-  _globals['_CHATREQUEST']._serialized_end=812
-  _globals['_CHATRESPONSE']._serialized_start=814
-  _globals['_CHATRESPONSE']._serialized_end=842
-  _globals['_TOCLASSIFIER']._serialized_start=877
-  _globals['_TOCLASSIFIER']._serialized_end=1706
+  _globals['_QUERYANSWER']._serialized_end=455
+  _globals['_GENERALANSWER']._serialized_start=457
+  _globals['_GENERALANSWER']._serialized_end=567
+  _globals['_QUERY']._serialized_start=569
+  _globals['_QUERY']._serialized_end=626
+  _globals['_DEEPLINK']._serialized_start=628
+  _globals['_DEEPLINK']._serialized_end=750
+  _globals['_DEEPLINK_PARAMSENTRY']._serialized_start=705
+  _globals['_DEEPLINK_PARAMSENTRY']._serialized_end=750
+  _globals['_ACTIONFULL']._serialized_start=752
+  _globals['_ACTIONFULL']._serialized_end=841
+  _globals['_ACTION']._serialized_start=843
+  _globals['_ACTION']._serialized_end=897
+  _globals['_DOCUMENT']._serialized_start=899
+  _globals['_DOCUMENT']._serialized_end=944
+  _globals['_TRAINRESPONSE']._serialized_start=946
+  _globals['_TRAINRESPONSE']._serialized_end=1035
+  _globals['_SEARCHREQUEST']._serialized_start=1037
+  _globals['_SEARCHREQUEST']._serialized_end=1085
+  _globals['_CHATREQUEST']._serialized_start=1087
+  _globals['_CHATREQUEST']._serialized_end=1132
+  _globals['_CHATRESPONSE']._serialized_start=1134
+  _globals['_CHATRESPONSE']._serialized_end=1219
+  _globals['_TOCLASSIFIER']._serialized_start=1254
+  _globals['_TOCLASSIFIER']._serialized_end=2083
 # @@protoc_insertion_point(module_scope)

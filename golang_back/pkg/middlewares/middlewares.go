@@ -86,6 +86,12 @@ func (md *MiddlewaresWrapper) AuthenticationMiddleware(c *fiber.Ctx) error {
 func (md *MiddlewaresWrapper) ApiKeyMiddleware(c *fiber.Ctx) error {
 	fmt.Println("in api key middleware")
 	apiKey := c.Get("api-key")
+	// check length of the apiKey -- lets say it should not be less than 4 - just for now cause I do not know length of the key generated with UUID4
+	if len(apiKey) < 4 {
+		return c.Status(401).JSON(
+			fiber.Map{"error": "Invalid API key"},
+		)
+	}
 	// check if apiKey start with skg_
 	if apiKey[:4] != "skg_" {
 		return c.Status(401).JSON(
@@ -100,7 +106,6 @@ func (md *MiddlewaresWrapper) ApiKeyMiddleware(c *fiber.Ctx) error {
 			"error": "Invalid API key",
 		})
 	}
-
 	return c.Next()
 }
 
@@ -110,6 +115,10 @@ func (md *MiddlewaresWrapper) RateLimitMiddleware(c *fiber.Ctx) error {
 
 func (md *MiddlewaresWrapper) CalculateTokenUsageMiddleware(c *fiber.Ctx) error {
 	fmt.Println("Calculating token usage")
+	return c.Next()
+}
+
+func (md *MiddlewaresWrapper) UpdateRedisForUsage(c *fiber.Ctx) error {
 	return c.Next()
 }
 

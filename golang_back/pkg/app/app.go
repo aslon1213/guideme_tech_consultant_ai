@@ -52,7 +52,7 @@ func New() *App {
 	app.Handlers = handlers.New(app.Ctx, app.Mongo, redisClient)
 	app.Middleware = middlewares.New(app.Ctx, app.Mongo, redisClient)
 	app.RegisterRoutes()
-
+	go app.LoadUsagesFromRedisToDatabase()
 	return app
 }
 
@@ -72,14 +72,15 @@ func (app *App) Close() {
 }
 
 func (app *App) RegisterRoutes() {
-
+	fmt.Println("Registering routes")
 	routes.RegisterAuthRoutes(app.Fiber, app.Middleware, app.Handlers)
 
-	routes.RegisterWsRoutes(app.Fiber, app.Middleware, app.Handlers)
-	routes.RegisterActionsRoutes(app.Fiber, app.Middleware, app.Handlers)
-	routes.RegisterChatRoutes(app.Fiber, app.Middleware, app.Handlers)
-	routes.RegisterDocumentsRoutes(app.Fiber, app.Middleware, app.Handlers)
-	routes.RegisterAdminDashboardRoutes(app.Fiber, app.Middleware, app.Handlers)
+	routes.RegisterWsRoutes(app.Fiber, app.Middleware, app.Handlers)             // websocket
+	routes.RegisterActionsRoutes(app.Fiber, app.Middleware, app.Handlers)        // actions
+	routes.RegisterChatRoutes(app.Fiber, app.Middleware, app.Handlers)           // chat
+	routes.RegisterDocumentsRoutes(app.Fiber, app.Middleware, app.Handlers)      // documents
+	routes.RegisterAdminDashboardRoutes(app.Fiber, app.Middleware, app.Handlers) // admin
+	routes.RegisterTTSRoutes(app.Fiber, app.Middleware, app.Handlers)            // TTS
 }
 
 func (a *App) LoadUsagesFromRedisToDatabase() {

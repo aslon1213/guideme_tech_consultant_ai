@@ -1,9 +1,14 @@
 package models
 
 type Action struct {
-	Type    string `json:"type" bson:"type"`
-	Element string `json:"element" bson:"element"`
-	Value   string `json:"value" bson:"value"`
+	Type        string `json:"type" bson:"type"`
+	Description string `json:"description" bson:"description"`
+	Deeplink    Deeplink
+}
+
+type Deeplink struct {
+	Url    string            `json:"url" bson:"url"`
+	Params map[string]string `json:"params" bson:"params"`
 }
 
 type Document struct {

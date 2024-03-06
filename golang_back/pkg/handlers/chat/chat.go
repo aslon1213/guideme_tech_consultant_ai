@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"
@@ -127,4 +128,29 @@ func (ch *ChatHandlers) CloseChat(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(a)
+}
+
+func (ch *ChatHandlers) ChatUsingWebsocket(c *websocket.Conn) {
+	var chat_id string
+	input := struct {
+		Text     string
+		Audio    []byte
+		Language string
+		UseTTS   bool
+		UseSTT   bool
+	}{}
+	fmt.Println(input)
+	fmt.Println(chat_id)
+	// fmt.Println("hello test 2")
+
+	for {
+		messageType, p, err := c.ReadMessage()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println(messageType, p)
+		c.WriteMessage(messageType, p)
+	}
+
 }

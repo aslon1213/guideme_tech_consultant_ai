@@ -17,7 +17,7 @@ type ApiKey struct {
 	Name      string             `json:"name" bson:"name"`
 	Owner     primitive.ObjectID `json:"owner" bson:"owner"`
 	CreatedAt time.Time          `json:"created_at" bson:"created_at"`
-	ExpiresAt time.Time          `json:"updated_at" bson:"updated_at"`
+	ExpiresAt time.Time          `json:"expires_at" bson:"expires_at"`
 	Active    bool               `json:"active" bson:"active"`
 }
 

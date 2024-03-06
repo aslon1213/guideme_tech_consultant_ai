@@ -81,11 +81,17 @@ message Query {
     // int32 n_results = 3;
 }
 
+message Deeplink {
+    string url = 1;
+    // map of key values 
+    map<string, string> params = 2;
+}
+
 message ActionFull {
-    string name = 1;
+    string type = 1;
     // list of actions Action 
-    repeated string properties = 2;
-    string username = 4;
+    string description = 2;
+    Deeplink Deeplink = 3;
 }
 message Action {
     string type = 1;
