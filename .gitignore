@@ -1,2 +1,5 @@
 audio_support/
 .env
+tts/
+temp.txt
+tts/

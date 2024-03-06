@@ -1,6 +1,9 @@
 *.env*
 main
-dockerfiles/docker_commands.txt
 test.html
 main.go
 zadachalar.md
+pricing.*
+test.txt
+test.wav 
+test.*

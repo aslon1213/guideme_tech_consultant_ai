@@ -6,6 +6,8 @@ import (
 	"aslon1213/customer_support_bot/pkg/middlewares"
 	"aslon1213/customer_support_bot/pkg/routes"
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,6 +17,7 @@ type App struct {
 	Fiber      *fiber.App
 	Ctx        context.Context
 	Mongo      *mongo.Client
+	Redis      *initializers.RedisClient
 	Handlers   *handlers.HandlersWrapper
 	Middleware *middlewares.MiddlewaresWrapper
 }
@@ -35,11 +38,21 @@ func New() *App {
 	if err != nil {
 		panic(err)
 	}
+
+	// get redis client
+	redisClient, err := initializers.NewRedisClient()
+	if err != nil {
+		panic(err)
+	}
+	app.Redis = redisClient
+
 	app.Mongo = mongoClient
 	fiber := initializers.NewFiber()
 	app.Fiber = fiber
-	app.Handlers = handlers.New(app.Ctx, app.Mongo)
+	app.Handlers = handlers.New(app.Ctx, app.Mongo, redisClient)
+	app.Middleware = middlewares.New(app.Ctx, app.Mongo, redisClient)
 	app.RegisterRoutes()
+	go app.LoadUsagesFromRedisToDatabase()
 	return app
 }
 
@@ -59,11 +72,25 @@ func (app *App) Close() {
 }
 
 func (app *App) RegisterRoutes() {
+	fmt.Println("Registering routes")
+	routes.RegisterAuthRoutes(app.Fiber, app.Middleware, app.Handlers)
 
-	routes.RegisterWsRoutes(app.Fiber, app.Middleware, app.Handlers)
+	routes.RegisterWsRoutes(app.Fiber, app.Middleware, app.Handlers)             // websocket
+	routes.RegisterActionsRoutes(app.Fiber, app.Middleware, app.Handlers)        // actions
+	routes.RegisterChatRoutes(app.Fiber, app.Middleware, app.Handlers)           // chat
+	routes.RegisterDocumentsRoutes(app.Fiber, app.Middleware, app.Handlers)      // documents
+	routes.RegisterAdminDashboardRoutes(app.Fiber, app.Middleware, app.Handlers) // admin
+	routes.RegisterTTSRoutes(app.Fiber, app.Middleware, app.Handlers)            // TTS
+}
 
-	routes.RegisterActionsRoutes(app.Fiber, app.Middleware, app.Handlers)
-	routes.RegisterChatRoutes(app.Fiber, app.Middleware, app.Handlers)
-	routes.RegisterDocumentsRoutes(app.Fiber, app.Middleware, app.Handlers)
-	routes.RegisterAdminDashboardRoutes(app.Fiber, app.Middleware, app.Handlers)
+func (a *App) LoadUsagesFromRedisToDatabase() {
+	for {
+		time.Sleep(5 * time.Minute)
+		fmt.Println("Loading usages from redis to database")
+
+		// read from redis
+		// write to database
+		// calculate usage
+		// write to database
+	}
 }

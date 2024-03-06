@@ -61,12 +61,16 @@ message ChatID {
 message QueryAnswer {
     bool actions = 1;
     bytes answer = 2;
+    float input_token_length = 3;
+    int64 output_token_length = 4;
 }
 
 
 message GeneralAnswer {
     bytes answer = 1;
     string orJsonAnswer = 2;
+    float input_token_length = 3;
+    int64 output_token_length = 4;
 }
 
 
@@ -77,11 +81,17 @@ message Query {
     // int32 n_results = 3;
 }
 
+message Deeplink {
+    string url = 1;
+    // map of key values 
+    map<string, string> params = 2;
+}
+
 message ActionFull {
-    string name = 1;
+    string type = 1;
     // list of actions Action 
-    repeated string properties = 2;
-    string username = 4;
+    string description = 2;
+    Deeplink Deeplink = 3;
 }
 message Action {
     string type = 1;
@@ -109,6 +119,8 @@ message Document {
 
 message TrainResponse {
     string message = 1;
+    float input_token_length = 2;
+    int64 output_token_length = 3;
 }
 
 message SearchRequest {
@@ -123,4 +135,6 @@ message ChatRequest {
 
 message ChatResponse {
     string text = 1;
+    float input_token_length = 2;
+    int64 output_token_length = 3;
 }

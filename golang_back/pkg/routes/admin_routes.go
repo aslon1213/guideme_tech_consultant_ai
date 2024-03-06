@@ -4,13 +4,12 @@ import (
 	"aslon1213/customer_support_bot/pkg/handlers"
 	"aslon1213/customer_support_bot/pkg/middlewares"
 
-	"aslon1213/customer_support_bot/pkg/webhandlers"
-
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/adaptor"
 )
 
 func RegisterAdminDashboardRoutes(fb *fiber.App, md *middlewares.MiddlewaresWrapper, handlers *handlers.HandlersWrapper) {
+	client := fb.Group("/client", md.AuthenticationMiddleware)
+	// fb.Get("/client", adaptor.HTTPHandlerFunc(webhandlers.IndexHandler))
+	client.Get("/dashboard", handlers.ClientHandlers.GetDashboard)
 
-	fb.Get("/admin", adaptor.HTTPHandlerFunc(webhandlers.IndexHandler))
 }

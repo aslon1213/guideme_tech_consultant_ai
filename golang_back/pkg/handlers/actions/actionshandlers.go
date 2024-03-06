@@ -2,12 +2,15 @@ package actions
 
 import (
 	"aslon1213/customer_support_bot/pkg/grpc/toclassifier"
+	"aslon1213/customer_support_bot/pkg/models"
 	"context"
 	"fmt"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -28,7 +31,10 @@ func New(ctx context.Context, clientCollection *mongo.Collection) *ActionsWrappe
 func (a *ActionsWrappers) Can(c *fiber.Ctx) error {
 
 	q := c.Query("q")
-	username := c.Query("username")
+	// username := c.Query("username")
+	chat_id := c.Query("chat_id")
+	fmt.Println("in can: ", chat_id)
+
 	// n_results = 1
 
 	conn, err := grpc.Dial(
@@ -46,8 +52,8 @@ func (a *ActionsWrappers) Can(c *fiber.Ctx) error {
 	general_answer, err := client.ClassifyAndAnswer(
 		a.ctx,
 		&toclassifier.Query{
-			Query:    q,
-			Username: username,
+			Query:  q,
+			ChatId: chat_id,
 		},
 	)
 	if err != nil {
@@ -89,13 +95,40 @@ func (a *ActionsWrappers) QueryActions(c *fiber.Ctx) error {
 	return c.JSON(cc)
 }
 
+func (a *ActionsWrappers) GetAllActions(c *fiber.Ctx) error {
+	client, ok := c.Locals("client").(*models.Client)
+	if !ok {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Client not found",
+		})
+	}
+
+	// get from the database
+	actions := []*models.Action{}
+	// project only the actions
+	cursor, err := a.clientCollection.Find(a.ctx, bson.M{
+		"username": client.Username,
+	}, options.Find().SetProjection(bson.M{
+		"actions": 1,
+	}))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+	defer cursor.Close(a.ctx)
+	err = cursor.All(a.ctx, &actions)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+	return c.JSON(actions)
+}
+
 func (a *ActionsWrappers) Train(c *fiber.Ctx) error {
 	username := c.Query("username")
-	var input []struct {
-		Name           string   `json:"name"`
-		Properties     []string `json:"properties"`
-		CanBeFormatted bool     `json:"can_be_formatted"`
-	}
+	var input []models.Action
 	err := c.BodyParser(&input)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -103,13 +136,16 @@ func (a *ActionsWrappers) Train(c *fiber.Ctx) error {
 			"input": c.Body(),
 		})
 	}
-	// fmt.Println("got input:", input)
+	// load actions to chroma database
 	actions := []*toclassifier.ActionFull{}
 	for _, v := range input {
 		actionfull := toclassifier.ActionFull{
-			Name:       v.Name,
-			Properties: v.Properties,
-			Username:   username,
+			Type:        v.Type,
+			Description: v.Description,
+			Deeplink: &toclassifier.Deeplink{
+				Url:    v.Deeplink.Url,
+				Params: v.Deeplink.Params,
+			},
 		}
 		actions = append(actions, &actionfull)
 	}
@@ -147,7 +183,19 @@ func (a *ActionsWrappers) Train(c *fiber.Ctx) error {
 			"error": err.Error(),
 		})
 	}
+
 	fmt.Println("Got response from server: ", response)
+
+	// save to database actions - which is client database = not chroma database
+	a.clientCollection.UpdateByID(a.ctx, bson.M{
+		"username": username,
+	},
+		bson.M{
+			"$set": bson.M{
+				"actions": actions,
+			},
+		},
+	)
 	return c.JSON(fiber.Map{
 		"message": response,
 	})

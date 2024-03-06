@@ -21,14 +21,16 @@ import (
 var SavedConnections = make(map[string]*websocket.Conn)
 
 func RegisterWsRoutes(fb *fiber.App, middlewares *middlewares.MiddlewaresWrapper, handlers *handlers.HandlersWrapper) {
-	fb.Use("/chat/over_voice", func(c *fiber.Ctx) error {
+
+	over_voice := fb.Group("/chat/over_voice")
+	over_voice.Use("", func(c *fiber.Ctx) error {
 		if websocket.IsWebSocketUpgrade(c) {
 			c.Locals("allowed", true)
 			return c.Next()
 		}
 		return fiber.ErrUpgradeRequired
 	})
-	fb.Get("/chat/over_voice/", websocket.New(TestWEbsocket))
+	over_voice.Get("", middlewares.ApiKeyMiddleware, websocket.New(TestWEbsocket))
 	fb.Get("/chat/call/:username", MakeACall)
 }
 
