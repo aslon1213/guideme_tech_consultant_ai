@@ -8,9 +8,10 @@ import (
 )
 
 func RegisterDocumentsRoutes(fb *fiber.App, md *middlewares.MiddlewaresWrapper, handlers *handlers.HandlersWrapper) {
-	documents := fb.Group("/documents")
+	documents := fb.Group("/documents", md.AuthenticationMiddleware)
 	dh := handlers.DocumentHandler
 	documents.Post("/upload", dh.Upload)
+	documents.Delete("/delete", dh.DeleteDocument)
 	documents.Get("/train", dh.Train)
 	// documents.Get("", nil) // qeury
 	// documents.Put("/append", nil)

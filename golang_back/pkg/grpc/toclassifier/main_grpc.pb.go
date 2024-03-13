@@ -28,7 +28,8 @@ type ToClassifierClient interface {
 	QueryActions(ctx context.Context, in *Query, opts ...grpc.CallOption) (*ActionFull, error)
 	GiveAudioAnswerForQuery(ctx context.Context, in *Query, opts ...grpc.CallOption) (*GeneralAnswer, error)
 	GiveAudioAnswerOrJustTextAnswer(ctx context.Context, in *Query, opts ...grpc.CallOption) (*AudoWithText, error)
-	SaveDocuments(ctx context.Context, in *Documents, opts ...grpc.CallOption) (*GeneralAnswer, error)
+	SaveDocuments(ctx context.Context, in *Document, opts ...grpc.CallOption) (*GeneralAnswer, error)
+	DeleteDocument(ctx context.Context, in *Document, opts ...grpc.CallOption) (*GeneralAnswer, error)
 	GetGreetingMessage(ctx context.Context, in *Query, opts ...grpc.CallOption) (*GeneralAnswer, error)
 	// to classifier service
 	ClassifyAndAnswer(ctx context.Context, in *Query, opts ...grpc.CallOption) (*GeneralAnswer, error)
@@ -123,9 +124,18 @@ func (c *toClassifierClient) GiveAudioAnswerOrJustTextAnswer(ctx context.Context
 	return out, nil
 }
 
-func (c *toClassifierClient) SaveDocuments(ctx context.Context, in *Documents, opts ...grpc.CallOption) (*GeneralAnswer, error) {
+func (c *toClassifierClient) SaveDocuments(ctx context.Context, in *Document, opts ...grpc.CallOption) (*GeneralAnswer, error) {
 	out := new(GeneralAnswer)
 	err := c.cc.Invoke(ctx, "/toclassifier.ToClassifier/SaveDocuments", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *toClassifierClient) DeleteDocument(ctx context.Context, in *Document, opts ...grpc.CallOption) (*GeneralAnswer, error) {
+	out := new(GeneralAnswer)
+	err := c.cc.Invoke(ctx, "/toclassifier.ToClassifier/DeleteDocument", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -178,7 +188,8 @@ type ToClassifierServer interface {
 	QueryActions(context.Context, *Query) (*ActionFull, error)
 	GiveAudioAnswerForQuery(context.Context, *Query) (*GeneralAnswer, error)
 	GiveAudioAnswerOrJustTextAnswer(context.Context, *Query) (*AudoWithText, error)
-	SaveDocuments(context.Context, *Documents) (*GeneralAnswer, error)
+	SaveDocuments(context.Context, *Document) (*GeneralAnswer, error)
+	DeleteDocument(context.Context, *Document) (*GeneralAnswer, error)
 	GetGreetingMessage(context.Context, *Query) (*GeneralAnswer, error)
 	// to classifier service
 	ClassifyAndAnswer(context.Context, *Query) (*GeneralAnswer, error)
@@ -209,8 +220,11 @@ func (UnimplementedToClassifierServer) GiveAudioAnswerForQuery(context.Context, 
 func (UnimplementedToClassifierServer) GiveAudioAnswerOrJustTextAnswer(context.Context, *Query) (*AudoWithText, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GiveAudioAnswerOrJustTextAnswer not implemented")
 }
-func (UnimplementedToClassifierServer) SaveDocuments(context.Context, *Documents) (*GeneralAnswer, error) {
+func (UnimplementedToClassifierServer) SaveDocuments(context.Context, *Document) (*GeneralAnswer, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SaveDocuments not implemented")
+}
+func (UnimplementedToClassifierServer) DeleteDocument(context.Context, *Document) (*GeneralAnswer, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteDocument not implemented")
 }
 func (UnimplementedToClassifierServer) GetGreetingMessage(context.Context, *Query) (*GeneralAnswer, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGreetingMessage not implemented")
@@ -354,7 +368,7 @@ func _ToClassifier_GiveAudioAnswerOrJustTextAnswer_Handler(srv interface{}, ctx 
 }
 
 func _ToClassifier_SaveDocuments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Documents)
+	in := new(Document)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -366,7 +380,25 @@ func _ToClassifier_SaveDocuments_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/toclassifier.ToClassifier/SaveDocuments",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ToClassifierServer).SaveDocuments(ctx, req.(*Documents))
+		return srv.(ToClassifierServer).SaveDocuments(ctx, req.(*Document))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ToClassifier_DeleteDocument_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Document)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToClassifierServer).DeleteDocument(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/toclassifier.ToClassifier/DeleteDocument",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToClassifierServer).DeleteDocument(ctx, req.(*Document))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -473,6 +505,10 @@ var ToClassifier_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SaveDocuments",
 			Handler:    _ToClassifier_SaveDocuments_Handler,
+		},
+		{
+			MethodName: "DeleteDocument",
+			Handler:    _ToClassifier_DeleteDocument_Handler,
 		},
 		{
 			MethodName: "GetGreetingMessage",

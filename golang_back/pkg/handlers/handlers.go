@@ -6,6 +6,7 @@ import (
 	"aslon1213/customer_support_bot/pkg/handlers/chat"
 	"aslon1213/customer_support_bot/pkg/handlers/client"
 	"aslon1213/customer_support_bot/pkg/handlers/documents"
+	sttHandlers "aslon1213/customer_support_bot/pkg/handlers/stt"
 	ttshandlers "aslon1213/customer_support_bot/pkg/handlers/tts"
 	"aslon1213/customer_support_bot/pkg/initializers"
 	"context"
@@ -22,6 +23,7 @@ type HandlersWrapper struct {
 	AuthenticationHandlers *authentication.AuthenticationHandlers
 	ClientHandlers         *client.ClientHandlers
 	TTSHandlers            *ttshandlers.TTSHandlers
+	STTHandlers            *sttHandlers.SttHandlers
 }
 
 func New(ctx context.Context, mongoClient *mongo.Client, redisClient *initializers.RedisClient) *HandlersWrapper {
@@ -58,5 +60,6 @@ func New(ctx context.Context, mongoClient *mongo.Client, redisClient *initialize
 		AuthenticationHandlers: authentication.New(ctx, clients_collection, api_keys_collection, redisClient),
 		ClientHandlers:         client.New(ctx, clients_collection, api_keys_collection, redisClient),
 		TTSHandlers:            ttshandlers.New(ctx),
+		STTHandlers:            sttHandlers.New(ctx),
 	}
 }

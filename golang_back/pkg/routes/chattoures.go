@@ -15,6 +15,8 @@ func RegisterChatRoutes(fb *fiber.App, md *middlewares.MiddlewaresWrapper, handl
 	chath := handlers.ChatHandlers
 	chat.Get("/open", chath.OpenChat)
 	chat.Get("/query", chath.Query)
+	chat.Get("/can", handlers.ActionsHandler.Can) // classify and answer --- "can"
+	//					 //	 go throught classification process and decide whether actions should be taken or should be given answer to question
 	chat.Get("/close", chath.CloseChat)
 
 	// websocket for chat streaming

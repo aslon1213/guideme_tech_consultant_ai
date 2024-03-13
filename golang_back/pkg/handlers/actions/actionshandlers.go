@@ -4,6 +4,7 @@ import (
 	"aslon1213/customer_support_bot/pkg/grpc/toclassifier"
 	"aslon1213/customer_support_bot/pkg/models"
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -61,8 +62,21 @@ func (a *ActionsWrappers) Can(c *fiber.Ctx) error {
 			"error": err.Error(),
 		})
 	}
+	o := map[string]interface{}{}
+	err = json.Unmarshal(general_answer.Answer, &o)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
 
-	return c.JSON(general_answer)
+	return c.JSON(o)
+}
+
+func (a *ActionsWrappers) AppendAction(c *fiber.Ctx) error {
+	return c.Status(fiber.StatusNotImplemented).JSON(fiber.Map{
+		"message": "Not implemented yet--- We are working on it.",
+	})
 }
 
 func (a *ActionsWrappers) QueryActions(c *fiber.Ctx) error {
@@ -136,10 +150,13 @@ func (a *ActionsWrappers) Train(c *fiber.Ctx) error {
 			"input": c.Body(),
 		})
 	}
+	fmt.Println("input:", input)
+	// return c.JSON(input)
 	// load actions to chroma database
 	actions := []*toclassifier.ActionFull{}
 	for _, v := range input {
 		actionfull := toclassifier.ActionFull{
+			Username:    username,
 			Type:        v.Type,
 			Description: v.Description,
 			Deeplink: &toclassifier.Deeplink{
@@ -149,6 +166,7 @@ func (a *ActionsWrappers) Train(c *fiber.Ctx) error {
 		}
 		actions = append(actions, &actionfull)
 	}
+
 	// fmt.Println("actions:", actions)
 	con, err := grpc.Dial(
 		os.Getenv("CLASSIFIER"),

@@ -158,15 +158,19 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
             print(action_full)
             training_.AddAction(
                 {
-                    "properties": action_full.get("properties", []),
-                    "name": action_full["name"],
+                    "type": action_full["type"],
+                    "description": action_full.get("description", ""),
+                    "deeplink": action_full.get("deeplink", ""),
                 }
             )
-
             counter += 1
         training_.SetUsername(username)
         training_.TrainandSave(sentence_transformer_ef=sentence_transformer_ef_chroma)
         return TrainResponse(message="Training done")
+
+    def DeleteDocument(self, request, context):
+        # yet to be implemented
+        return super().DeleteDocument(request, context)
 
     def OpenChat(self, request, context):
         username = request.username
@@ -226,13 +230,17 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
             results = actions_formatter.collection.query(
                 query_texts=[request.query], n_results=1
             )
-            formatted_results = actions_formatter.FormatToGeneralAnswer(
-                results, request.query
+            formatted_results, open_ai_response = (
+                actions_formatter.FormatToGeneralAnswer(results, request.query)
             )
             # parse results to ActionFull
             print("Got results", formatted_results)
             formatted_results["type"] = "actions"
-            response_2 = GeneralAnswer(answer=orjson.dumps(formatted_results))
+            response_2 = GeneralAnswer(
+                answer=orjson.dumps(formatted_results),
+                input_token_length=open_ai_response.usage.prompt_tokens,
+                output_token_length=open_ai_response.usage.completion_tokens,
+            )
         else:
             #  go to chatbot
             print("I am going to chatbot")
@@ -252,15 +260,19 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
                 results_2 = actions_formatter.collection.query(
                     query_texts=[request.query], n_results=1
                 )
-                formatted_results = actions_formatter.FormatToGeneralAnswer(
-                    results_2, request.query
+                formatted_results, open_ai_response = (
+                    actions_formatter.FormatToGeneralAnswer(results_2, request.query)
                 )
                 # parse results to ActionFull
                 print("Got results", formatted_results)
                 formatted_results["type"] = "actions"
                 return GeneralAnswer(answer=orjson.dumps(formatted_results))
             # print("Got results", results)
-            response_2 = GeneralAnswer(answer=results)
+            response_2 = GeneralAnswer(
+                answer=results,
+                input_token_length=open_ai_response.usage.prompt_tokens,
+                output_token_length=open_ai_response.usage.completion_tokens,
+            )
         return response_2
 
     def QueryActions(self, request, context):
@@ -274,9 +286,10 @@ class ToClassifierServicer(main_pb2_grpc.ToClassifierServicer):
         o = orjson.loads(results["documents"][0][0])
         print(o)
         return ActionFull(
-            properties=o["properties"],
+            description=o["description"],
+            deeplink=o["deeplink"],
             username=request.username,
-            name=o["name"],
+            type=o["type"],
         )
 
 

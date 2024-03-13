@@ -1,0 +1,42 @@
+syntax = "proto3";
+package stt;
+option go_package = "pkg/grpc/stt";
+
+
+
+service SpeechToText {
+    rpc Transcribe (TranscribeRequest) returns (TranscribeResponse) {}
+    rpc TranscribeStream (stream TranscribeRequest) returns (stream TranscribeResponse)  {}
+    rpc TranscribeStreamWithMetadata (stream TranscribeRequest) returns (stream TranscribeResponse) {}
+    rpc DetectLanguage (DetectLanguageRequest) returns (DetectLanguageResponse) {}
+    rpc GetSupportedLanguages(GetSupportedLanguagesRequest) returns (GetSupportedLanguagesResponse) {}
+}
+
+message TranscribeRequest {
+    bytes audio = 1;
+    string audio_format = 2;
+    string language_code = 3;
+}
+
+message TranscribeResponse {
+    string text = 1;
+    string language_code = 2;
+}
+
+message DetectLanguageRequest {
+    bytes audio = 1;
+    string audio_format = 2;
+}
+
+message DetectLanguageResponse {
+    string language_code = 1;
+}
+
+message GetSupportedLanguagesResponse {
+    repeated string language_codes = 1;
+}
+message GetSupportedLanguagesRequest {
+}
+
+
+
