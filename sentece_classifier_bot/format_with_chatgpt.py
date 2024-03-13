@@ -23,6 +23,7 @@ def format_actions_sequence(actions: dict, user_message: str = None):
     messages.append({"role": "system", "content": "action: " + actions_string})
 
     response = openai.chat.completions.create(model="gpt-4", messages=messages)
+    # usage = response.usage
     message = response.choices[0].message
     print("GET MESSAGE: ", message)
     return message, response

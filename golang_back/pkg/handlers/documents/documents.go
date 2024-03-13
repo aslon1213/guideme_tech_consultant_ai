@@ -2,6 +2,7 @@ package documents
 
 import (
 	"aslon1213/customer_support_bot/pkg/grpc/toclassifier"
+	"aslon1213/customer_support_bot/pkg/models"
 	"context"
 	"os"
 
@@ -21,6 +22,63 @@ func New(ctx context.Context, clients_collection *mongo.Collection) *DocumentHan
 		ctx:                ctx,
 		clients_collection: clients_collection,
 	}
+}
+
+func (dh *DocumentHandlers) DeleteDocument(c *fiber.Ctx) error {
+	client, ok := c.Locals("client").(*models.Client)
+	if !ok {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "client not found",
+		})
+	}
+
+	filename := c.Query("filename")
+	if filename == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "document_name is required",
+		})
+	}
+	// check if user exists
+
+	documents := client.Documents
+	for _, document := range documents {
+		if document.Name == filename {
+			//connect to grpc
+			conn, err := grpc.Dial(
+				os.Getenv("CLASSIFIER"),
+				grpc.WithTransportCredentials(insecure.NewCredentials()),
+			)
+			if err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+					"error": err.Error(),
+				})
+			}
+			defer conn.Close()
+
+			// get the stub
+			clasifier_client := toclassifier.NewToClassifierClient(conn)
+			// delete document from db
+
+			_, err = clasifier_client.DeleteDocument(dh.ctx, &toclassifier.Document{
+				Username: client.Username,
+				Filename: filename,
+			})
+			if err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+					"error": err.Error(),
+				})
+			}
+			return c.JSON(fiber.Map{
+				"message": "document deleted",
+			})
+
+		}
+	}
+
+	return c.Status(401).JSON(fiber.Map{
+		"error": "Document not found",
+	})
+
 }
 
 func (dh *DocumentHandlers) Upload(c *fiber.Ctx) error {
@@ -58,7 +116,7 @@ func (dh *DocumentHandlers) Upload(c *fiber.Ctx) error {
 	}
 
 	client := toclassifier.NewToClassifierClient(conn)
-	msg := &toclassifier.Documents{
+	msg := &toclassifier.Document{
 		Username:    username,
 		FileContent: buffer,
 		Filename:    filename,

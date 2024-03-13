@@ -46,7 +46,12 @@ class ToClassifierStub(object):
                 )
         self.SaveDocuments = channel.unary_unary(
                 '/toclassifier.ToClassifier/SaveDocuments',
-                request_serializer=main__pb2.Documents.SerializeToString,
+                request_serializer=main__pb2.Document.SerializeToString,
+                response_deserializer=main__pb2.GeneralAnswer.FromString,
+                )
+        self.DeleteDocument = channel.unary_unary(
+                '/toclassifier.ToClassifier/DeleteDocument',
+                request_serializer=main__pb2.Document.SerializeToString,
                 response_deserializer=main__pb2.GeneralAnswer.FromString,
                 )
         self.GetGreetingMessage = channel.unary_unary(
@@ -116,6 +121,12 @@ class ToClassifierServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def DeleteDocument(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GetGreetingMessage(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -176,7 +187,12 @@ def add_ToClassifierServicer_to_server(servicer, server):
             ),
             'SaveDocuments': grpc.unary_unary_rpc_method_handler(
                     servicer.SaveDocuments,
-                    request_deserializer=main__pb2.Documents.FromString,
+                    request_deserializer=main__pb2.Document.FromString,
+                    response_serializer=main__pb2.GeneralAnswer.SerializeToString,
+            ),
+            'DeleteDocument': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteDocument,
+                    request_deserializer=main__pb2.Document.FromString,
                     response_serializer=main__pb2.GeneralAnswer.SerializeToString,
             ),
             'GetGreetingMessage': grpc.unary_unary_rpc_method_handler(
@@ -323,7 +339,24 @@ class ToClassifier(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/toclassifier.ToClassifier/SaveDocuments',
-            main__pb2.Documents.SerializeToString,
+            main__pb2.Document.SerializeToString,
+            main__pb2.GeneralAnswer.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DeleteDocument(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/toclassifier.ToClassifier/DeleteDocument',
+            main__pb2.Document.SerializeToString,
             main__pb2.GeneralAnswer.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

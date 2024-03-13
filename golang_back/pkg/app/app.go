@@ -7,6 +7,7 @@ import (
 	"aslon1213/customer_support_bot/pkg/routes"
 	"context"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -57,7 +58,14 @@ func New() *App {
 }
 
 func (app *App) Run() {
-	app.Fiber.Listen(":9000")
+
+	port := os.Getenv("FIBER_PORT")
+	if port == "" {
+		port = "9000"
+	}
+	fmt.Println("Running on port: ", port)
+
+	app.Fiber.Listen(":" + port)
 }
 
 func (app *App) Close() {
@@ -81,6 +89,7 @@ func (app *App) RegisterRoutes() {
 	routes.RegisterDocumentsRoutes(app.Fiber, app.Middleware, app.Handlers)      // documents
 	routes.RegisterAdminDashboardRoutes(app.Fiber, app.Middleware, app.Handlers) // admin
 	routes.RegisterTTSRoutes(app.Fiber, app.Middleware, app.Handlers)            // TTS
+	routes.RegisterSttRoutes(app.Fiber, app.Middleware, app.Handlers)            // STT
 }
 
 func (a *App) LoadUsagesFromRedisToDatabase() {

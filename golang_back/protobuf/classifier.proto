@@ -14,7 +14,8 @@ rpc QueryActions (Query) returns (ActionFull) {}
 rpc GiveAudioAnswerForQuery (Query) returns (GeneralAnswer) {}
 rpc GiveAudioAnswerOrJustTextAnswer(Query) returns (AudoWithText) {}
 
-rpc SaveDocuments(Documents) returns (GeneralAnswer) {}
+rpc SaveDocuments(Document) returns (GeneralAnswer) {}
+rpc DeleteDocument(Document) returns (GeneralAnswer) {}
 rpc GetGreetingMessage(Query) returns (GeneralAnswer) {}
 
 // to classifier service
@@ -46,7 +47,7 @@ message Username {
     string username = 1;
 }
 
-message Documents {
+message Document {
     bytes file_content = 1;
     string filename = 2;
     string file_type = 3;
@@ -91,7 +92,8 @@ message ActionFull {
     string type = 1;
     // list of actions Action 
     string description = 2;
-    Deeplink Deeplink = 3;
+    Deeplink deeplink = 3;
+    string username = 4;
 }
 message Action {
     string type = 1;
@@ -110,10 +112,6 @@ message Action {
 enum Categories {
     PDF = 0;
     TXT = 1;
-}
-message Document {
-    bytes context = 1;
-    string category = 2;
 }
 
 

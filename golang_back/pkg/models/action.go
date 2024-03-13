@@ -1,9 +1,9 @@
 package models
 
 type Action struct {
-	Type        string `json:"type" bson:"type"`
-	Description string `json:"description" bson:"description"`
-	Deeplink    Deeplink
+	Type        string   `json:"type" bson:"type"`
+	Description string   `json:"description" bson:"description"`
+	Deeplink    Deeplink `json:"deeplink" bson:"deeplink"`
 }
 
 type Deeplink struct {

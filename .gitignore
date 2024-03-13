@@ -3,3 +3,5 @@ audio_support/
 tts/
 temp.txt
 tts/
+stt/
+llm_test/

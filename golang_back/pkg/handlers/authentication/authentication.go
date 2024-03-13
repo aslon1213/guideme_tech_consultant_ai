@@ -130,14 +130,14 @@ func (au *AuthenticationHandlers) Login(c *fiber.Ctx) error {
 }
 
 func (au *AuthenticationHandlers) Logout(c *fiber.Ctx) error {
-	return c.JSON(fiber.Map{
-		"message": "Register",
+	return c.Status(fiber.StatusNotImplemented).JSON(fiber.Map{
+		"message": "not yet implemented - logout",
 	})
 }
 
 func (au *AuthenticationHandlers) Refresh(c *fiber.Ctx) error {
 
-	return c.JSON(fiber.Map{
-		"message": "Register",
+	return c.Status(fiber.StatusNotImplemented).JSON(fiber.Map{
+		"message": "not yet implemented - refresh token",
 	})
 }

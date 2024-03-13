@@ -1,0 +1,6 @@
+protoc *.proto \
+     --proto_path=. \
+     --grpc-swift_opt=Client=true,Server=false \
+     --grpc-swift_out=./swift \
+     --swift_opt=Visibility=Public \
+     --swift_out=./swift

@@ -14,7 +14,7 @@ func RegisterAuthRoutes(fb *fiber.App, md *middlewares.MiddlewaresWrapper, handl
 
 	keys := fb.Group("/keys", md.AuthenticationMiddleware)
 	keys.Post("/create", ah.CreateKey)
-	keys.Post("/delete", ah.DeleteKey)
+	keys.Delete("/delete", ah.DeleteKey)
 	keys.Get("/list", ah.ListTheKeys)
 	keys.Get("/info", ah.GetInfo)
 
