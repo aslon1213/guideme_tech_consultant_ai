@@ -21,7 +21,7 @@ import (
 var SavedConnections = make(map[string]*websocket.Conn)
 
 func RegisterWsRoutes(fb *fiber.App, middlewares *middlewares.MiddlewaresWrapper, handlers *handlers.HandlersWrapper) {
-
+	// hello world
 	over_voice := fb.Group("/chat/over_voice")
 	over_voice.Use("", func(c *fiber.Ctx) error {
 		if websocket.IsWebSocketUpgrade(c) {
